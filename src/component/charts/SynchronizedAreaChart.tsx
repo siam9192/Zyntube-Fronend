@@ -1,12 +1,20 @@
 import React, { PureComponent } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
-const data = Array.from({length:30}).map((_,index)=>( {
-    name: `Feb ${index+1}`,
-    uv: Math.ceil(Math.random()*100000),
-    pv: 2400,
-    amt: 2400,
-  }))
+const data = Array.from({ length: 30 }).map((_, index) => ({
+  name: `Feb ${index + 1}`,
+  uv: Math.ceil(Math.random() * 100000),
+  pv: 2400,
+  amt: 2400,
+}));
 
 export default class SynchronizedAreaChart extends PureComponent {
   static demoUrl = 'https://codesandbox.io/p/sandbox/synchronized-area-chart-9jj95d';
@@ -14,7 +22,6 @@ export default class SynchronizedAreaChart extends PureComponent {
   render() {
     return (
       <div style={{ width: '100%' }}>
-
         <ResponsiveContainer width="100%" height={400}>
           <AreaChart
             width={500}
