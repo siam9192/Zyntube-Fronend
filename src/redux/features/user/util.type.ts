@@ -1,8 +1,6 @@
-
-
 export enum ECardViewType {
-  GRID = "grid",
-  LIST = "list",
+  GRID = 'grid',
+  LIST = 'list',
 }
 
 export type TCardViewType = `${ECardViewType}`;
@@ -18,14 +16,13 @@ export interface IParam {
 }
 
 export type TSearchKeywordData = {
-  type: "product" | "category";
+  type: 'product' | 'category';
   name: string;
   imageUrl: string;
   price?: number;
   stock?: number;
   hierarchySte?: string;
 };
-
 
 export interface IResponse<T> {
   data: T;

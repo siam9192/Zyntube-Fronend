@@ -1,42 +1,77 @@
-import { Dispatch } from '@reduxjs/toolkit';
-import { getRedirectResult, onAuthStateChanged } from 'firebase/auth';
-import React, { createContext, ReactNode, SetStateAction, useEffect, useState } from 'react';
+
+import { onAuthStateChanged } from 'firebase/auth';
+import  { createContext, ReactNode,useEffect, useState } from 'react';
 import { auth } from '../firebase';
 import { IUser } from '../types/user.type';
+import { setAccessToken } from '../helpers';
+import { getMe } from '../services/user.service';
 interface IProps {
   children: ReactNode;
 }
 type TContextValue = {
   isLoading: boolean;
   error: any;
-    user: IUser | null;
-    isUserExist: boolean;
-    setIsLoading: (bol: boolean) => void;
-    setError: (err: any) => void;
-    setUser: Dispatch<SetStateAction<any>>;
+  user: IUser | null;
+  isUserExist: boolean;
+  setIsLoading: (bol: boolean) => void;
+  setError: (err: any) => void;
+  setUser: (user:IUser | null)=> void;
   refetch: () => void;
 };
-export const UserContext = createContext<TContextValue | null>(null);
+export const CurrentUserProviderContext = createContext<TContextValue | null>(null);
 function CurrentUserProvider({ children }: IProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
-  const [user, setUser] = useState<IUser|null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const [toggle, setToggle] = useState<boolean>(false);
-
   useEffect(() => {
-    setIsLoading(true)
-    onAuthStateChanged(auth, user => {
+  onAuthStateChanged(auth,async function( user) {
       if (user) {
-        console.log('User is signed in:', user);
-        console.log('User ID:', user.uid);
-        console.log('Email:', user.email);
+       try {
+         setAccessToken( await user.getIdToken())
+         const data =  await getMe()
+         setUser({
+         google:user,
+         app:data.data
+         })
+       } catch (error:any) {
+        console.log(error.message)
+       }
       } else {
-       setUser(null)
+        setUser(null);
       }
-      setIsLoading(false)
+      setIsLoading(false);
     });
+  
   }, []);
-  return children;
+
+
+  const refetch = ()=>setToggle(p=>!p)
+  const handelSetUser = (user:IUser|null)=>{
+    setUser(user)
+  }
+  const handelSetIsLoading = (st:boolean)=>{
+    setIsLoading(st)
+  }
+  const value:TContextValue = {
+    isLoading,
+    setIsLoading:handelSetIsLoading,
+    error,
+    setError,
+    user,
+    setUser:handelSetUser,
+    isUserExist:user?true:false,
+    refetch
+  }
+
+ 
+  return (
+    <CurrentUserProviderContext.Provider value={value}  >
+      {
+        children
+      }
+    </CurrentUserProviderContext.Provider>
+  )
 }
 
 export default CurrentUserProvider;

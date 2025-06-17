@@ -11,8 +11,6 @@ const AuthHandler = () => {
           const credential = GoogleAuthProvider.credentialFromResult(result);
           const token = credential?.accessToken ?? null;
           const user = result.user;
-          console.log('User:', user);
-          console.log('Access Token:', token);
         }
       } catch (error: any) {
         const errorCode = error?.code;

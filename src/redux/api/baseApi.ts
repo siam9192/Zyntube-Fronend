@@ -5,11 +5,10 @@ import envConfig from '../../config/env.config';
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/v1',
+    baseUrl: envConfig.url.serverBase,
     // credentials:"include",
     prepareHeaders: headers => {
       const token = Cookies.get('accessToken');
-
       if (token) {
         headers.set('authorization', `Bearer ${token}`);
       }

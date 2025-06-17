@@ -1,4 +1,3 @@
-
 import { baseApi } from '../../api/baseApi';
 import { IResponse } from '../user/util.type';
 

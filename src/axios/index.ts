@@ -1,18 +1,16 @@
-import axios from "axios";
-import Cookies from "js-cookie"
-import envConfig from "../config/env.config";
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import envConfig from '../config/env.config';
 const axiosInstance = axios.create({
-  baseURL: envConfig.serverBaseUrl,
+  baseURL: envConfig.url.serverBase,
 });
 
 axiosInstance.interceptors.request.use(async function (config) {
-  const accessToken = Cookies.get("accessToken");
+  const accessToken = Cookies.get('accessToken');
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
-
-
 
 export default axiosInstance;

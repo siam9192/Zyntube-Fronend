@@ -1,7 +1,7 @@
 const envConfig = {
-  serverBaseUrl: "http://localhost:5000/api/v1",
-  google: {
-    clientId: '598864068465-tbutplssnfr10u7bru5shp14rnhco1a4.apps.googleusercontent.com',
+  url: {
+    serverBase: import.meta.env.VITE_SERVER_BASE_URL,
+    ipifyAPi: import.meta.env.VITE_IPIFY_API_URL,
   },
   imgBB: {
     apiKey: 'c9c302a9d5cee64c8eb4dde4d9803027',
