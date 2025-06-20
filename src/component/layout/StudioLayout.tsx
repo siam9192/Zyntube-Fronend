@@ -6,7 +6,7 @@ import StudioSideBarSkeleton from '../skeleton/StudioSideBarSkeleton';
 import { useAppSelector } from '../../redux/hook';
 
 function StudioLayout() {
-  const { user, isLoading } = useCurrentUser();
+  const { isLoading } = useCurrentUser();
   const { isStudioSidebarExpanded } = useAppSelector(st => st.toggle);
   return (
     <div>

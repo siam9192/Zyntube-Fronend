@@ -1,11 +1,10 @@
 import Avatar from '../ui/Avatar';
 import { IoExitOutline, IoVideocamOutline } from 'react-icons/io5';
 import { SiGoogleanalytics } from 'react-icons/si';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { BiCustomize } from 'react-icons/bi';
 import { HiOutlineUserGroup } from 'react-icons/hi';
 import useCurrentUser from '../../hooks/useCurrentUser';
-import { useAppSelector } from '../../redux/hook';
 
 interface IProps {
   isExpand?: boolean;
@@ -41,7 +40,7 @@ function StudioSidebar({ isExpand }: IProps) {
   const channel = user!.app.channel;
 
   return (
-    <div className="py-3 px-2 lg:border-r h-full border-r-gray-700/10 w-full lg:w-fit ">
+    <div className="py-3 px-2 lg:border-r h-full border-r-gray-700/10 w-full lg:w-full ">
       <div>
         <Avatar
           url={channel.profilePhotoUrl}

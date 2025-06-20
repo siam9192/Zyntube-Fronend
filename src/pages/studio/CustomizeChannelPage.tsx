@@ -50,7 +50,6 @@ const CustomizeChannelPage = () => {
   const cnuLength = isChanged ? channelUniqueName.length : channel?.uniqueName?.length;
   const caLength = isChanged ? channelAbout.length : channel?.about?.length;
 
-  console.log(channelUniqueName);
   // Copy channel url
   const copyChannelUrl = () => {
     navigator.clipboard.writeText(channelUrl);

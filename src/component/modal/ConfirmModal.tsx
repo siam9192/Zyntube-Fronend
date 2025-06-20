@@ -8,6 +8,8 @@ interface IProps {
   cancelButtonText?: string;
   disabled?: boolean;
   children: ReactNode;
+  heading?: string;
+  description?: string;
 }
 function ConfirmModal({
   onconfirm,
