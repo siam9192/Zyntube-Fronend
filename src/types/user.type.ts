@@ -1,6 +1,6 @@
 import { UserInfo } from 'firebase/auth';
 import { IChannel } from './channel.type';
-import { ISession } from './session.interface';
+import { ISession } from './session.type';
 
 export interface IUser {
   google: UserInfo;
@@ -30,4 +30,18 @@ export enum EUserStatus {
   ACTIVE = 'ACTIVE',
   BLOCKED = 'BLOCKED',
   DELETED = 'DELETED',
+}
+
+export interface ISetupProfilePayload {
+  channelName: string;
+  channelUniqueName: string;
+  channelProfilePhotoUrl: string;
+}
+
+export interface IUpdateProfilePayload {
+  channelName?: string;
+  channelUniqueName?: string;
+  channelProfilePhotoUrl?: string;
+  channelProfileCoverPhotoUrl?: string;
+  channelAbout?: string;
 }

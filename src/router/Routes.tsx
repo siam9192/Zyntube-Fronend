@@ -11,11 +11,18 @@ import CustomizeChannelPage from '../pages/studio/CustomizeChannelPage';
 import MySubscribers from '../pages/studio/MySubscribers';
 import ChannelAnalysis from '../pages/studio/ChannelAnalysis';
 import PublishVideoPage from '../pages/studio/PublishVideoPage';
+import Provider from '../provider/Provider';
+import Auth from '../middleware/Auth';
+import { EUserRole } from '../types/user.type';
 
 const routes = [
   {
     path: '',
-    element: <App />,
+    element: (
+      <Provider>
+        <App />
+      </Provider>
+    ),
     children: [
       {
         path: '/',
@@ -46,7 +53,11 @@ const routes = [
       },
       {
         path: 'studio',
-        element: <StudioLayout />,
+        element: (
+          <Auth roles={[EUserRole.USER]}>
+            <StudioLayout />
+          </Auth>
+        ),
         children: [
           {
             path: '',

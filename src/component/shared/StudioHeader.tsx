@@ -1,14 +1,26 @@
 import { TbPlus } from 'react-icons/tb';
 import Avatar from '../ui/Avatar';
 import { SlMenu } from 'react-icons/sl';
+import { useAppDispatch, useAppSelector } from '../../redux/hook';
+import { toggle } from '../../redux/slices/toggle.slice';
+import StudioModalSidebar from './StudioModalSidebar';
 const StudioHeader = () => {
+  const dispatch = useAppDispatch();
+  const { isStudioSidebarExpanded } = useAppSelector(st => st.toggle);
+  const toggleStudioSidebar = () => {
+    dispatch(toggle({ isStudioSidebarExpanded: !isStudioSidebarExpanded }));
+  };
   return (
     <header className="p-5 border-b-2 border-gray-700/20">
       <div className="flex justify-between items-center  ">
         <div className="flex items-center gap-4">
-          <button className="md:text-3xl text-2xl font-medium ">
+          <button
+            onClick={toggleStudioSidebar}
+            className={`md:text-3xl text-2xl font-medium  hidden lg:block ${isStudioSidebarExpanded ? 'text-primary' : ''}`}
+          >
             <SlMenu />
           </button>
+          <StudioModalSidebar />
           <div className="flex items-center gap-2">
             <img
               src="https://vidtube-six.vercel.app/images/logo.png"

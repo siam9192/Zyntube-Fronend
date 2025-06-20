@@ -11,6 +11,7 @@ const AuthForm = (props: IProps) => {
   const navigate = useNavigate();
   const onSuccess = () => {
     props.onSuccess && props.onSuccess();
+    window.location.reload();
     navigate('/');
   };
 

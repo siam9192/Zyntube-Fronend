@@ -1,13 +1,22 @@
 import { IAppUser } from '../../../types/user.type';
+import { IResponse } from '../../../types/util.type';
 import { baseApi } from '../../api/baseApi';
-import { IResponse } from './util.type';
 
 const userApi = baseApi.injectEndpoints({
   endpoints: builder => ({
-    getMe: builder.mutation({
-      query: payload => ({
-        url: `/user/me`,
+    getMe: builder.query({
+      query: () => ({
+        url: `/users/me`,
         method: 'GET',
+      }),
+      transformResponse: (response: IResponse<IAppUser[]>) => {
+        return response;
+      },
+    }),
+    setupProfile: builder.mutation({
+      query: payload => ({
+        url: `/users/profile/setup`,
+        method: 'POST',
         body: payload,
       }),
       transformResponse: (response: IResponse<IAppUser[]>) => {
@@ -17,4 +26,4 @@ const userApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {} = userApi;
+export const { useGetMeQuery, useSetupProfileMutation } = userApi;

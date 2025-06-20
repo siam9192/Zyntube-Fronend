@@ -9,7 +9,9 @@ axiosInstance.interceptors.request.use(async function (config) {
   const accessToken = Cookies.get('accessToken');
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
+    config.withCredentials = true;
   }
+
   return config;
 });
 
