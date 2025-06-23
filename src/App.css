@@ -238,3 +238,31 @@
   }
 }
 
+
+
+
+
+.video__progress__circle {
+  transform: rotate(-90deg);
+}
+
+
+.video__progress__circle circle:nth-child(1) {
+  stroke: black;
+  stroke-width: 10px;
+  stroke-linecap: round;
+}
+
+
+.video__progress__circle circle:nth-child(2) {
+  stroke: var(--color-primary);
+  stroke-width: 12px;
+  stroke-linecap: round;
+  transition: 1s ease-in;
+  
+}
+
+
+.video__progress__circle__container .progress__percentage {
+  transform: translate(-50%,-50%);
+}
