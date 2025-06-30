@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-
-import { SlArrowLeft, SlArrowRight } from 'react-icons/sl';
-import CategoryCarouselButton from '../../ui/CategoryCarouselButton';
+import { useContext, useEffect, useState } from 'react';
+import { HomeContext } from '../../../pages/Home';
 
 function Categories() {
   const categories = [
@@ -28,7 +26,22 @@ function Categories() {
     'Live Streams',
   ];
 
+  const context = useContext(HomeContext);
+
+  if (!context) {
+    throw new Error('useContext must be used within a HomeContext.Provider');
+  }
+  const { setCategory, refetch, isLoading } = context;
+
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    setCategory(categories[activeIndex].toLowerCase());
+    if (isLoading) return;
+    setTimeout(() => {
+      refetch();
+    }, 300);
+  }, [activeIndex]);
 
   return (
     <>

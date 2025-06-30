@@ -2,12 +2,12 @@ import React from 'react';
 import { HiDotsVertical } from 'react-icons/hi';
 
 interface IProps {
-  className?: string;
+  btnClassName?: string;
 }
 
-const VideoCardShortOptions = ({ className }: IProps) => {
+const VideoCardShortOptions = ({ btnClassName }: IProps) => {
   return (
-    <button className={className || 'text-2xl'}>
+    <button className={btnClassName || 'text-2xl'}>
       <HiDotsVertical />
     </button>
   );

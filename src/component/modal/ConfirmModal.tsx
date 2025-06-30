@@ -29,6 +29,7 @@ function ConfirmModal({
     setIsOpen(false);
     onconfirm();
   };
+
   return (
     <>
       <div onClick={() => setIsOpen(true)} className="w-fit h-fit">
@@ -37,7 +38,7 @@ function ConfirmModal({
       {isOpen ? (
         <div
           onClick={() => setIsOpen(false)}
-          className="w-full transition-all duration-500 inset-0 bg-gray-950/40 h-screen fixed flex justify-center items-center "
+          className="w-full transition-all duration-500 inset-0 bg-gray-950/40 h-screen fixed flex justify-center items-center  z-50"
         >
           <div
             onClick={e => e.stopPropagation()}

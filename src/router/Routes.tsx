@@ -14,6 +14,7 @@ import PublishVideoPage from '../pages/studio/PublishVideoPage';
 import Provider from '../provider/Provider';
 import Auth from '../middleware/Auth';
 import { EUserRole } from '../types/user.type';
+import EditVideoPage from '../pages/studio/EditVideoPage';
 
 const routes = [
   {
@@ -33,7 +34,7 @@ const routes = [
             element: <Home />,
           },
           {
-            path: 'watch',
+            path: 'watch/:id',
             element: <WatchPage />,
           },
           {
@@ -76,8 +77,12 @@ const routes = [
             element: <ChannelAnalysis />,
           },
           {
-            path: 'publish-video',
+            path: 'publish-video/:id',
             element: <PublishVideoPage />,
+          },
+          {
+            path: 'edit-video/:id',
+            element: <EditVideoPage />,
           },
         ],
       },

@@ -1,57 +1,133 @@
-import React, { useState } from 'react';
-import Avatar from '../../ui/Avatar';
-import { BsPatchCheckFill } from 'react-icons/bs';
-import { PiShareFat, PiThumbsDownDuotone, PiThumbsUp, PiThumbsUpDuotone } from 'react-icons/pi';
+import { useState } from 'react';
+import { PiShareFat, PiThumbsDownDuotone, PiThumbsUpDuotone } from 'react-icons/pi';
 import { BiDotsHorizontalRounded } from 'react-icons/bi';
+import { useWatchContext } from '../../../pages/WatchPage';
+import ToggleSubscribe from '../../ui/ToggleSubscribe';
+import { formatNumber } from '../../../helpers';
+import { EVideoReactionType } from '../../../types/video-reaction.type';
+import useCurrentUser from '../../../hooks/useCurrentUser';
+import { switchVideoReaction } from '../../../services/video-reaction.service';
+import { toast } from 'sonner';
+import { DEFAULT_ERROR_MESSAGE } from '../../../utils/constant';
 
 const VideoDetails = () => {
+  const { video, setVideoState, videoState } = useWatchContext();
+  const { channel, state } = video;
   const [isViewFull, setIsViewFull] = useState(false);
+  const { isUserExist } = useCurrentUser();
+  const reactionType = videoState.reactionType;
 
-  let description = `#hello Lorem ipsum dolor sit amet consectetur https://vidtube-six.vercel.app/watch?v=0g0mnexkp84 adipisicing elit. Cumque dolorem necessitatibus ad, voluptatibus recusandae aliquam amet natus dicta temporibus excepturi voluptas nam sunt doloribus harum nihil dignissimos, ipsam aperiam fugit officia reiciendis inventore a laudantium, rerum voluptate! Cupiditate placeat sapiente pariatur deleniti, quae quidem tenetur? Eum vel optio, natus doloribus mollitia distinctio labore officia unde aperiam quos praesentium dicta cumque aut error laborum voluptatibus fuga tenetur voluptatum in tempore? In possimus accusantium molestias ea? Repellat, itaque. Deleniti, nam a enim, corrupti eius repellendus, possimus nulla inventore neque id necessitatibus tempore sint iusto. Assumenda, at veritatis maxime quidem quo praesentium consequuntur maiores recusandae impedit ipsum accusamus eius a error! Alias nulla dicta veniam id officia placeat, ipsum accusamus ea eos hic natus ipsam quo quod autem, a saepe eius, quas ducimus odit harum. Nostrum, voluptas libero. Incidunt inventore animi impedit obcaecati aperiam eum exercitationem repudiandae velit tempore, distinctio doloribus maiores sint ad dolores neque pariatur minus, quidem suscipit eligendi quasi, quisquam vero expedita repellendus. Consectetur laudantium magni quibusdam ab assumenda rem nisi fuga possimus suscipit voluptatum aliquam, eveniet, dicta, autem voluptate repudiandae sed! Nobis consectetur pariatur nemo laboriosam aperiam consequuntur laudantium nihil voluptas quibusdam. Quam labore repellat ab dignissimos reiciendis, praesentium rem officia cumque qui laborum soluta autem tenetur explicabo, eum eos aut totam quibusdam, accusantium commodi. Consequatur laborum iure vel veritatis, obcaecati voluptate fugit aliquam eveniet non aut placeat deleniti rem, atque asperiores corrupti, ratione rerum beatae nemo. Facilis repudiandae natus aliquid quasi corrupti labore beatae autem doloribus eos optio quas libero unde voluptatem laboriosam, vero earum veritatis dolorum excepturi. Tenetur voluptates, quos veritatis optio reprehenderit odit vitae adipisci dolore illum culpa sequi nulla libero pariatur hic dolores soluta ipsum ut tempora velit. Officiis facilis molestiae enim suscipit. Molestiae culpa minus suscipit quaerat ab commodi recusandae, quia eaque perferendis odit ipsum debitis delectus magni voluptatibus dignissimos inventore in corporis praesentium ea deleniti vero? Nisi reprehenderit numquam sapiente quam laborum ea totam magnam, qui dolore sequi. Incidunt dicta neque, sed eos obcaecati nihil natus assumenda, voluptates itaque qui animi illum! Assumenda hic recusandae asperiores eum doloremque possimus? Laborum mollitia alias nemo accusantium. Laudantium doloribus aliquid sit illo architecto? Quia laboriosam atque unde aliquam excepturi. Obcaecati repudiandae at ad sit distinctio porro harum quae facilis recusandae eligendi? Temporibus quasi cumque, illum voluptatem architecto nisi laudantium hic vel quo veritatis quaerat minima fuga facere culpa delectus placeat vitae, impedit deleniti possimus! Placeat odio sed veniam quasi, eligendi quia reprehenderit iusto! Voluptatem temporibus ab minus aspernatur. Ipsam ad id saepe cum consectetur ipsum quo, qui officia, soluta sapiente dolorem labore amet inventore unde dicta, placeat ducimus. Quisquam, similique! Explicabo nulla vero vitae repellendus beatae quas aliquam, ad ipsa architecto veritatis eveniet cumque impedit ea alias laborum accusamus quisquam consequatur consectetur veniam possimus corrupti, blanditiis quibusdam? Incidunt adipisci, repellendus aliquid eius sit ex, quas, illo vero fugit dignissimos quaerat? Quisquam soluta doloribus sed velit accusamus dolor at quas? Non sed, perspiciatis debitis obcaecati, nisi et officiis voluptatum similique minus facilis accusamus maiores eaque incidunt? Accusantium.
-`;
-  description = description.replace(/#(\w+)/g, '<a href="#" class="tag">#$1</a>');
-
-  description = description.replace(
+  let description = video.description;
+  description = description?.replace(/#(\w+)/g, '<a href="#" class="tag">#$1</a>');
+  description = description?.replace(
     /(https?:\/\/[^\s]+)/g,
     url => `<a class="description__url" href="${url}" target="_blank">${url}</a>`,
   );
 
+  async function handelSwitchReaction(type: EVideoReactionType) {
+    if (!isUserExist) {
+      return;
+    }
+
+    const prevType = videoState.reactionType; // previous reaction (LIKE, DISLIKE, or null)
+    const updateType = prevType === type ? null : type; // toggle logic
+
+    let likes = videoState.likesCount;
+    let dislikes = videoState.dislikesCount;
+
+    if (prevType === EVideoReactionType.LIKE) {
+      likes -= 1;
+    }
+    if (prevType === EVideoReactionType.DISLIKE) {
+      dislikes -= 1;
+    }
+
+    if (updateType === EVideoReactionType.LIKE) {
+      likes += 1;
+    }
+    if (updateType === EVideoReactionType.DISLIKE) {
+      dislikes += 1;
+    }
+    setVideoState(state => ({
+      ...state,
+      reactionType: updateType,
+      likesCount: likes,
+      dislikesCount: dislikes,
+    }));
+
+    try {
+      const response = await switchVideoReaction({ videoId: video.id, type: updateType });
+      if (!response.success) {
+        throw new Error();
+      }
+    } catch (error) {
+      toast.error(DEFAULT_ERROR_MESSAGE);
+      setVideoState(state => ({
+        ...state,
+        reactionType: prevType,
+      }));
+    }
+  }
+
+  async function handelToggleSubscribe(st: boolean) {
+    console.log(st);
+    let subscribersCount = videoState.subscribersCount;
+    if (st) {
+      subscribersCount += 1;
+    } else {
+      subscribersCount -= 1;
+    }
+    setVideoState(p => ({ ...p, isSubscriber: st, subscribersCount: subscribersCount }));
+  }
+
   return (
     <div className="py-5">
-      <h1 className="md:text-2xl text-xl font-medium text-black">
-        Jhol | Coke Studio Pakistan | Season 15 | Maanu x Annural Khalid
-      </h1>
+      <h1 className="lg:text-2xl md:text-xl font-medium text-black">{video.title}</h1>
       <div className="mt-3">
         <div className="flex  md:flex-row flex-col justify-between md:items-center md:gap-0 gap-4">
           <div className="flex items-center gap-4 ">
-            <Avatar
-              url="https://yt3.ggpht.com/1MuvHPUzufSwNRsvbbIiuPD9A7gMvJwvoCJX2xmql2PficU-vsSdprlOXpuzrdIpQyMJSRUEjA=s48-c-k-c0x00ffffff-no-rj"
-              className="size-12 rounded-full"
+            <img
+              src={channel.profilePhotoUrl}
+              alt=""
+              className=" md:size-12 size-10 rounded-full object-cover"
             />
             <div>
-              <p className="md:text-xl text-lg text-black font-medium">
-                Coke Studio Pakistan{' '}
-                <span>
+              <p className="md:text-xl text-[.9rem] text-black font-medium">
+                {channel.name}
+                {/* <span>
                   <BsPatchCheckFill className="inline" size={18} color="" />
-                </span>
+                </span> */}
               </p>
 
-              <p className="text-sm text-gray-800">12.23 M Subscribers</p>
+              <p className="text-sm text-gray-800">
+                {formatNumber(videoState.subscribersCount)} Subscribers
+              </p>
             </div>
+            <ToggleSubscribe
+              onToggle={handelToggleSubscribe}
+              subscribed={videoState.isSubscriber}
+              channelId={channel.id}
+            />
           </div>
-          <div className="flex items-center  justify-around    gap-4 flex-wrap ">
+          <div className="flex items-center   justify-end    gap-4 flex-wrap ">
             <div className="flex items-center gap-2 rounded-full bg-gray-100 py-1 ">
-              <button className="px-4  space-x-2 ">
+              <button
+                onClick={() => handelSwitchReaction(EVideoReactionType.LIKE)}
+                className={`px-4  space-x-2 ${reactionType === EVideoReactionType.LIKE ? 'text-primary' : ''}`}
+              >
                 <span className="text-2xl">
                   <PiThumbsUpDuotone className="inline" />
                 </span>
-                <span>12K</span>
+                <span>{formatNumber(videoState.likesCount)}</span>
               </button>
-              <button className=" border-l border-gray-600/20  px-4  space-x-2 ">
+              <button
+                onClick={() => handelSwitchReaction(EVideoReactionType.DISLIKE)}
+                className={`border-l border-gray-600/20  px-4  space-x-2 ${reactionType === EVideoReactionType.DISLIKE ? 'text-primary' : ''}`}
+              >
                 <span className="text-2xl">
                   <PiThumbsDownDuotone className="inline" />
                 </span>
-                <span>12K</span>
+                <span>{formatNumber(videoState.dislikesCount)}</span>
               </button>
             </div>
 
@@ -72,13 +148,15 @@ const VideoDetails = () => {
           className="mt-7 p-5 bg-gray-100 rounded-md  hover:cursor-default "
         >
           <p className="text-[1rem] text-black font-medium  mb-2">
-            <span>{(2763733).toLocaleString()} Views </span>
-            <span>14 Jun 2025</span>
+            <span>{state.viewsCount.toLocaleString()} Views </span>
+            <span>{new Date(video.createdAt).toDateString()}</span>
           </p>
-          <p
-            dangerouslySetInnerHTML={{ __html: description }}
-            className={`text-[0.9rem] text-gray-900 leading-[1.8rem] ${!isViewFull ? ' line-clamp-5' : ''} `}
-          />
+          {description && (
+            <div
+              dangerouslySetInnerHTML={{ __html: description }}
+              className={`text-[0.9rem] text-gray-900 leading-[1.8rem] ${!isViewFull ? ' line-clamp-5' : ''} `}
+            />
+          )}
         </div>
       </div>
     </div>

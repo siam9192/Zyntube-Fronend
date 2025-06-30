@@ -17,18 +17,5 @@ export const baseApi = createApi({
   }),
 
   endpoints: builder => ({}),
-  tagTypes: [
-    'my-profile',
-    'current-user',
-    'campaigns',
-    'campaign-visit',
-    'campaign-latest-donations',
-    'campaign-donations',
-    'manage-campaigns',
-    'manage-users',
-    'user-details',
-    'manage-donations',
-    'my-notifications',
-    'my-utils-count',
-  ],
+  tagTypes: ['my-profile', 'current-user', 'my-videos'],
 });

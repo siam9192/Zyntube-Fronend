@@ -8,9 +8,9 @@ function Header() {
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-4">
-          <button className="md:text-3xl text-2xl font-medium lg:block hidden">
+          {/* <button className="md:text-3xl text-2xl font-medium lg:block hidden">
             <SlMenu />
-          </button>
+          </button> */}
           <div className="flex items-center gap-2">
             <img
               src="https://vidtube-six.vercel.app/images/logo.png"

@@ -1,4 +1,4 @@
-import  { ChangeEvent, ReactNode, RefObject, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ReactNode, RefObject, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { DEFAULT_ERROR_MESSAGE } from '../../utils/constant';
 import { AiOutlineReload } from 'react-icons/ai';
@@ -16,16 +16,19 @@ interface IProps {
 const privacies = Object.values(EVideoPrivacy);
 
 function UploadVideoModal(props: IProps) {
+  // Open status state
+  const [isOpen, setIsOpen] = useState(false);
+
   // Refs
   const videoInputRef = useRef<HTMLInputElement>(null);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
   // UI state
-  const [isOpen, setIsOpen] = useState(false);
+
   const [uploadPercentage, setUploadPercentage] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isUploading,setIsUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false);
   // File state
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -113,7 +116,7 @@ function UploadVideoModal(props: IProps) {
   const handelUpload = async () => {
     if (!canUpload) return;
     setIsError(false);
-   
+
     const payload: Record<string, string> = {
       title,
       privacy,
@@ -128,7 +131,8 @@ function UploadVideoModal(props: IProps) {
     formData.append('body', JSON.stringify(payload));
 
     try {
-      setIsUploading(true)
+      setIsUploading(true);
+      setIsOpen(false);
       const response = await postVideo(formData, percentage => setUploadPercentage(percentage));
       if (!response.success) {
         throw new Error();
@@ -136,24 +140,27 @@ function UploadVideoModal(props: IProps) {
       setIsSuccess(true);
     } catch (error) {
       setIsError(true);
-    }
-
-    finally {
-      setIsUploading(false)
+    } finally {
+      setIsUploading(false);
     }
   };
 
+  const handelCloseModal = () => {
+    setIsOpen(false);
+    setIsUploading(false);
+    setIsError(false);
+    setIsSuccess(false);
+    setTitle('');
+    setDescription('');
+    setThumbnailFile(null);
+    setVideoFile(null);
+  };
 
-  const handelCloseModal  =  ()=>{
-    setIsOpen(false)
-    setIsUploading(false)
-    setIsError(false)
-    setIsSuccess(false)
-    setTitle('')
-    setDescription('')
-    setThumbnailFile(null)
-    setVideoFile(null)
-  }
+  const handelNormalClose = () => {
+    setIsUploading(false);
+    setIsError(false);
+    setIsSuccess(false);
+  };
   return (
     <>
       <div onClick={() => setIsOpen(true)} className="size-fit">
@@ -410,17 +417,14 @@ function UploadVideoModal(props: IProps) {
           }}
         />
       )}
-   {
-   (  (isUploading || isError || isSuccess) && isOpen) ?
-       <VideoUploadProgressModal
-        onclose={handelCloseModal}
-        uploadPercentage={uploadPercentage}
-        isError={isError}
-        isSuccess={isSuccess}
-      />
-      :
-      null
-   }
+      {isUploading || isError || isSuccess ? (
+        <VideoUploadProgressModal
+          onclose={handelNormalClose}
+          uploadPercentage={uploadPercentage}
+          isError={isError}
+          isSuccess={isSuccess}
+        />
+      ) : null}
     </>
   );
 }

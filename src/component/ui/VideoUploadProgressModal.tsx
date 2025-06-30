@@ -31,7 +31,7 @@ function VideoUploadProgressModal({ uploadPercentage, isError, isSuccess, onclos
               </p>
               <div className="mt-5 text-center">
                 <button
-                   onClick={onclose}
+                  onClick={onclose}
                   className="px-6 py-3 bg-secondary hover:bg-purple-900 text-white rounded-md"
                 >
                   Okay, go for it

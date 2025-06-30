@@ -1,10 +1,9 @@
 import { AiOutlineHistory, AiOutlineLike } from 'react-icons/ai';
 import { BsCollectionPlay, BsQuestionCircle } from 'react-icons/bs';
-import { CgProfile } from 'react-icons/cg';
 import { FaRegFlag } from 'react-icons/fa';
 import { GoHome } from 'react-icons/go';
 import {
-  IoBookmarkOutline,
+ 
   IoCalendarClearOutline,
   IoFlagOutline,
   IoSettingsOutline,
@@ -13,8 +12,10 @@ import {
 import { LuFolder } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 import SignInButton from '../ui/SignInButton';
-
-const Sidebar = () => {
+interface IProps {
+  expand:boolean
+}
+const Sidebar = ({expand}:IProps) => {
   const baseicRoutes = [
     {
       title: 'Home',

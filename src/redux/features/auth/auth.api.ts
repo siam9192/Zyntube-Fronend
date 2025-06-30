@@ -1,6 +1,6 @@
 import { IAppUser } from '../../../types/user.type';
+import { IResponse } from '../../../types/util.type';
 import { baseApi } from '../../api/baseApi';
-import { IResponse } from '../user/util.type';
 const authApi = baseApi.injectEndpoints({
   endpoints: builder => ({
     googleCallback: builder.mutation({

@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import VideoCardShortOptions from '../../ui/VideoCardShortOptions';
 import { BsDot } from 'react-icons/bs';
+import RelatedVideoCard from '../../cards/RelatedVideoCard';
+import { useGetRelatedVideosQuery } from '../../../redux/features/video/video.api';
+import usEScreenSize, { EScreenSizeType } from '../../hooks/useScreenSize';
+import VideoCard from '../../cards/VideoCard';
 const tabs = ['Related', 'Recommended', 'For You', 'From Excited..'];
-function RelatedVideos() {
-  const [activeIndex, setActiveIndex] = useState(0);
 
-  let title = 'Build This Complete Modern Website Using Only HTML And';
-  title = title.length > 50 ? title.slice(0, 50) + '...' : title;
-  let channelName = 'Excited boy gaming';
-  channelName = channelName.length > 20 ? channelName.slice(0, 20) + '..' : channelName;
+interface IProps {
+  id: string;
+}
+
+function RelatedVideos({ id }: IProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const {screenSizeType} =  usEScreenSize()
+  const isSmallScreenSize = [EScreenSizeType.SM, EScreenSizeType.MD].includes(screenSizeType); 
+  const { data, isLoading } = useGetRelatedVideosQuery(id);
+
+  const videos = data?.data || [];
+  
 
   return (
     <div className="col-span-2">
@@ -22,36 +32,15 @@ function RelatedVideos() {
           </button>
         ))}
       </div>
-      <div className="flex flex-col gap-5">
-        {Array.from({ length: 20 }).map((_, index) => (
-          <div className="relative" key={index}>
-            <div className="flex md:flex-row flex-col gap-4 ">
-              <div className="lg:w-[40%] md:size-52 w-full md:h-full h-60  relative">
-                <img
-                  src="https://3.imimg.com/data3/BH/QL/MY-12724382/animation.jpg"
-                  className="rounded-md h-full w-full   object-cover"
-                />
-                <p className="p-1 rounded-sm text-sm scale-80 bg-primary text-white absolute bottom-2 right-1">
-                  10:20
-                </p>
-              </div>
-              <div className=" grow-1 ">
-                <h4 className="text-black font-semibold text-[0.9rem]">{title}</h4>
-                <div className="lg:mt-4 mt-2 font-primary">
-                  <p className="text-sm text-gray-700">{channelName}</p>
-                  <p className="text-gray-700 text-xs mt-0.5">
-                    <span>4.3M views</span>{' '}
-                    <span>
-                      <BsDot className="inline" />
-                    </span>{' '}
-                    <span>4 days ago</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <VideoCardShortOptions className="absolute right-0 bottom-0  p-2 hover:bg-secondary hover:rounded-full hover:text-white" />
-          </div>
-        ))}
+      <div className={` ${isSmallScreenSize ? 'grid md:grid-cols-2 grid-cols-1' :'flex flex-col'   }  gap-5`}>
+        {videos.map((_, index) => {
+         if(isSmallScreenSize) {
+          return <VideoCard video={_} key={index}/>
+         }
+         else {
+          return <RelatedVideoCard  video={_} key={index}/>
+         }
+        })}
       </div>
     </div>
   );

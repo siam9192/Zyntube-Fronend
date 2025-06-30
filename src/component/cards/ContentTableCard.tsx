@@ -1,8 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
-import { MdOutlinePublic } from 'react-icons/md';
-
-const ContentTableCard = () => {
+import { MdOutlineLock, MdOutlinePublic } from 'react-icons/md';
+import { EVideoPrivacy, EVideoStatus, IVideo } from '../../types/video.type';
+import { capitalize } from '../../helpers';
+import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
+import { DEFAULT_ERROR_MESSAGE } from '../../utils/constant';
+import { deleteVideo } from '../../services/video.service';
+import ConfirmModal from '../modal/ConfirmModal';
+interface IProps {
+  video: IVideo;
+  onDelete?: () => void;
+}
+const ContentTableCard = ({ video, onDelete }: IProps) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -23,24 +33,37 @@ const ContentTableCard = () => {
     };
   }, [isDropDownOpen]);
 
+  async function handelDelete() {
+    setIsDropDownOpen(false);
+    try {
+      const response = await deleteVideo(video.id);
+      if (!response.success) return;
+      toast.success('Video deleted successfully!');
+      onDelete && onDelete();
+    } catch (error) {
+      toast.error(DEFAULT_ERROR_MESSAGE);
+    }
+  }
+
+  const isProcessing = video.status === EVideoStatus.PROCESSING;
+  // https://3.imimg.com/data3/BH/QL/MY-12724382/animation.jpg
+
   return (
     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
       <th scope="row" className="px-6 py-4  text-gray-900  dark:text-white min-w-[600px]">
         <div className="flex  items-center gap-4">
           <img
-            src="https://3.imimg.com/data3/BH/QL/MY-12724382/animation.jpg"
+            src={video.media.thumbnailUrl}
             alt=""
-            className=" object-cover w-52 rounded-lg"
+            className={`object-cover w-52 rounded-lg ${isProcessing ? 'animate-pulse' : ''} `}
           />
+
           <div>
             <h4 className="text-[1.1rem] text-black font-primary font-medium line-clamp-2">
-              hol | Coke Studio Pakistan | Season 15 | Maanu x Annural Khalid
+              {video.title}
             </h4>
-            <p className=" line-clamp-2  font-normal text-gray-700 text-[0.7rem mt-1 ">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Asperiores nemo voluptas,
-              nesciunt provident hic cum commodi fuga ea adipisci error expedita recusandae
-              consequatur nobis saepe, unde velit, nulla laborum soluta reprehenderit quidem
-              numquam. Quos animi exercitationem ipsum quidem aliquam recusandae.
+            <p className=" line-clamp-2  font-normal text-gray-700 text-[0.7rem mt-1 line-clamp-2 ">
+              {video.description}
             </p>
           </div>
         </div>
@@ -48,28 +71,32 @@ const ContentTableCard = () => {
       <td className="px-6 py-4">
         <div className="flex items-center gap-1">
           <span className="text-xl text-black">
-            <MdOutlinePublic />
+            {video.setting.privacy === EVideoPrivacy.PRIVATE ? (
+              <MdOutlineLock />
+            ) : (
+              <MdOutlinePublic />
+            )}
           </span>
-          <p className="text-black font-medium">Public</p>
+          <p className="text-black font-medium">{capitalize(video.setting.privacy)}</p>
         </div>
       </td>
       <td className="px-6 py-4">
-        <p className="text-black font-medium">Draft</p>
+        <p className="text-black font-medium">{capitalize(video.status)}</p>
       </td>
       <td className="px-6 py-4 min-w-[200px]">
-        <p className="text-black font-medium">{new Date().toDateString()}</p>
+        <p className="text-black font-medium">{new Date(video.createdAt).toDateString()}</p>
       </td>
       <td className="px-6 py-4 text-right ">
-        <p className="text-black font-medium">{(335534).toLocaleString()}</p>
+        <p className="text-black font-medium">{video.state.viewsCount.toLocaleString()}</p>
       </td>
       <td className="px-6 py-4 text-right ">
-        <p className="text-black font-medium">{(3334).toLocaleString()}</p>
+        <p className="text-black font-medium">{(0).toLocaleString()}</p>
       </td>
       <td className="px-6 py-4 text-right ">
-        <p className="text-black font-medium">{(33234).toLocaleString()}</p>
+        <p className="text-black font-medium">{video.state.likesCount.toLocaleString()}</p>
       </td>
       <td className="px-6 py-4 text-right ">
-        <p className="text-black font-medium">{(534).toLocaleString()}</p>
+        <p className="text-black font-medium">{video.state.dislikesCount.toLocaleString()}</p>
       </td>
       <td className="px-6 py-4 text-right  relative">
         <button
@@ -86,8 +113,12 @@ const ContentTableCard = () => {
           ref={dropdownRef}
           className={`text-start absolute  right-0 w-40 min-h-20 bg-white  shadow-xl z-40 rounded-md p-5  space-y-2   gap-3 ${isDropDownOpen ? 'opacity-100' : 'opacity-0'} transition-all`}
         >
-          <button className=" text-black font-medium block">Edit This</button>
-          <button className=" text-black font-medium  hover:text-red-500 block">Delete</button>
+          <Link to={`edit-video/${video.id}`}>
+            <button className=" text-black font-medium block">Edit This</button>
+          </Link>
+          <ConfirmModal onconfirm={handelDelete}>
+            <button className=" text-black font-medium  hover:text-red-500 block">Delete</button>
+          </ConfirmModal>
         </div>
       </td>
     </tr>

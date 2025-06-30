@@ -10,6 +10,7 @@ export interface IChannel {
   profileCoverPhotoUrl: string;
   about: string;
   viewsCount: number;
+  subscribersCount: number;
   videos: [];
   status: EChannelStatus;
   updatedAt: string | Date;

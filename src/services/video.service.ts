@@ -24,3 +24,21 @@ export async function postVideo(
     throw new Error(error.response.message);
   }
 }
+
+export async function updateVideo(data: FormData, id: string) {
+  try {
+    const res = await axiosInstance.put(`/videos/${id}`, data);
+    return res.data as IResponse<null>;
+  } catch (error: any) {
+    throw new Error(error.response.message);
+  }
+}
+
+export async function deleteVideo(id: string) {
+  try {
+    const res = await axiosInstance.delete(`/videos/${id}`);
+    return res.data as IResponse<null>;
+  } catch (error: any) {
+    throw new Error(error.response.message);
+  }
+}
