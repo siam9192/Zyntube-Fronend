@@ -1,14 +1,14 @@
-import React from 'react';
-import { IWatchVideo } from '../../types/video.type';
+import { IPublicVideo, IWatchVideo } from '../../types/video.type';
 import { BsDot } from 'react-icons/bs';
 import VideoCardShortOptions from '../ui/VideoCardShortOptions';
 import { formatNumber, secondsToDurationShort, timeAgo } from '../../helpers';
 import { Link } from 'react-router-dom';
 interface IProps {
-  video: IWatchVideo;
+  video: IPublicVideo;
 }
 function RelatedVideoCard({ video }: IProps) {
   const { channel, state, media } = video;
+
   let title = video.title;
   title = title.length > 50 ? title.slice(0, 50) + '...' : title;
   let channelName = channel.name;
@@ -23,12 +23,12 @@ function RelatedVideoCard({ video }: IProps) {
           <div className="lg:w-[40%] md:size-52 w-full md:h-full relative">
             <img
               src={media.thumbnailUrl}
-              className="rounded-md  h-52 lg:h-20 xl:h-full  w-full   object-cover group-hover:hidden"
+              className="rounded-md  h-52 lg:h-20 xl:h-24  w-full   object-cover group-hover:hidden"
             />
             <img
               src={`https://image.mux.com/${media.muxPlaybackId}/animated.gif?end=10&fps=15`}
               alt=""
-              className=" rounded-md h-52 lg:h-20 xl:h-full  w-full  object-cover hidden group-hover:block  "
+              className=" rounded-md h-52 lg:h-20 xl:h-24  w-full  object-cover hidden group-hover:block  "
             />
 
             <p className="p-1 rounded-sm text-sm scale-80 bg-primary text-white absolute bottom-2 right-1">
@@ -50,7 +50,10 @@ function RelatedVideoCard({ video }: IProps) {
           </div>
         </div>
       </Link>
-      <VideoCardShortOptions btnClassName="absolute right-0 bottom-0  p-2 hover:bg-secondary hover:rounded-full hover:text-white" />
+      <VideoCardShortOptions
+        top="top-3"
+        btnClassName="absolute right-0 bottom-0  p-2 hover:bg-secondary hover:rounded-full hover:text-white"
+      />
     </div>
   );
 }

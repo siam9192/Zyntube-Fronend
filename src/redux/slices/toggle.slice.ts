@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface InitialState {
-  isPrimarySidebarExpanded:boolean
+  isPrimarySidebarExpanded: boolean;
   isStudioSidebarExpanded: boolean;
   isOpenLoginModal: boolean;
   isOpenUploadModal: boolean;
 }
 
 const initialState: InitialState = {
-  isPrimarySidebarExpanded:false,
+  isPrimarySidebarExpanded: false,
   isStudioSidebarExpanded: true,
   isOpenLoginModal: false,
   isOpenUploadModal: false,

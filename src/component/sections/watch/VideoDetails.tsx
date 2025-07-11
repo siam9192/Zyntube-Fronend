@@ -89,7 +89,7 @@ const VideoDetails = () => {
             <img
               src={channel.profilePhotoUrl}
               alt=""
-              className=" md:size-12 size-10 rounded-full object-cover"
+              className=" md:size-12 size-10 rounded-full object-cover outline-primary outline-2 outline-offset-1"
             />
             <div>
               <p className="md:text-xl text-[.9rem] text-black font-medium">
@@ -154,7 +154,7 @@ const VideoDetails = () => {
           {description && (
             <div
               dangerouslySetInnerHTML={{ __html: description }}
-              className={`text-[0.9rem] text-gray-900 leading-[1.8rem] ${!isViewFull ? ' line-clamp-5' : ''} `}
+              className={`text-[0.9rem] text-gray-900 leading-[1.8rem] whitespace-pre-line ${!isViewFull ? ' line-clamp-5' : ''} `}
             />
           )}
         </div>

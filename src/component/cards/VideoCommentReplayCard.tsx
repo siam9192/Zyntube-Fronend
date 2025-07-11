@@ -1,35 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { PiThumbsDown, PiThumbsUp } from 'react-icons/pi';
 import { BsReply } from 'react-icons/bs';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
 import CommentReplayBox from '../ui/CommentReplayBox';
-import { formatToPublicComment, timeAgo } from '../../helpers';
+import { timeAgo } from '../../helpers';
 import { IVideoComment, IVideoCommentPublic } from '../../types/video-comment.type';
-import {
-  changeVideoCommentPinStatus,
-  deleteVideoComment,
-} from '../../services/video-commnt.service';
+import { deleteVideoComment } from '../../services/video-commnt.service';
 import { toast } from 'sonner';
 import { DEFAULT_ERROR_MESSAGE } from '../../utils/constant';
-import { MdOutlinePushPin } from 'react-icons/md';
 import CommentUpdateBox from '../ui/CommentUpdateBox';
-import { RiArrowDropDownFill } from 'react-icons/ri';
-import { useGetVideoCommentAllRepliesQuery } from '../../redux/features/video-comment/video-comment.api';
-import VideoCommentReplayCard from './VideoCommentReplayCard';
 
 interface IProps {
   comment: IVideoCommentPublic;
   onDeleteSuccess?: (id: string) => void | any;
-  onChangePinStatusSuccess?: (id: string, status: boolean) => void | any;
   onUpdateSuccess?: (comment: IVideoComment) => void | any;
   onPostReplaySuccess?: (replay: IVideoComment) => void | any;
   isReplay?: boolean;
 }
-function VideoCommentCard({
+function VideoCommentReplayCard({
   comment,
   onDeleteSuccess,
-  onChangePinStatusSuccess,
   onUpdateSuccess,
   onPostReplaySuccess,
 }: IProps) {
@@ -42,11 +32,6 @@ function VideoCommentCard({
   const defaultDisplayLength = 200;
   const cardRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDisplayReplies, setIsDisplayReplies] = useState(false);
-  const { data } = useGetVideoCommentAllRepliesQuery(comment.id);
-  const [allReplies, setAllReplies] = useState<IVideoCommentPublic[]>([]);
-  const replies = data?.data;
-  const isPinned = comment.isPinned;
   useEffect(() => {
     const handler = () => {
       const currentDropdown = cardRef.current;
@@ -67,11 +52,6 @@ function VideoCommentCard({
       window.removeEventListener('resize', handler);
     };
   }, [isOnBottom]);
-  useEffect(() => {
-    if (replies && replies.length) {
-      setAllReplies(prev => [...prev, ...replies]);
-    }
-  }, [replies]);
 
   let content = comment.content;
   content =
@@ -136,49 +116,9 @@ function VideoCommentCard({
     }
   }
 
-  async function handelChangePinStatus() {
-    setIsLoading(true);
-    const toastId = toast.loading('Pinning comment...', { richColors: true });
-
-    try {
-      const status = !isPinned;
-      const response = await changeVideoCommentPinStatus(comment.id, { status });
-
-      if (!response.success) {
-        throw new Error(response.message);
-      }
-      toast.success(response.message, { id: toastId, richColors: true });
-      onChangePinStatusSuccess && onChangePinStatusSuccess(comment.id, status);
-    } catch (err) {
-      const message = (err as Error).message || DEFAULT_ERROR_MESSAGE;
-      toast.error(message, { id: toastId, richColors: true });
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   async function handelPostReplay(replay: IVideoComment) {
     setIsReplayBoxOpen(false);
-    setAllReplies(prev => [
-      ...prev,
-      formatToPublicComment(replay, { isOwner: true, reactionType: null }),
-    ]);
-    // onPostReplaySuccess && onPostReplaySuccess(replay);
-    setTimeout(() => {
-      setIsDisplayReplies(true);
-    }, 0);
-  }
-
-  function handelUpdateComment(updated: IVideoComment) {
-    setAllReplies(prev =>
-      prev.map(comment =>
-        comment.id === updated.id ? { ...comment, content: updated.content } : comment,
-      ),
-    );
-  }
-
-  function handelReplayDelete(id: string) {
-    setAllReplies(prev => prev.filter(_ => _.id !== id));
+    onPostReplaySuccess && onPostReplaySuccess(replay);
   }
 
   function toggleUpdateBox() {
@@ -189,9 +129,6 @@ function VideoCommentCard({
     switch (name) {
       case 'delete':
         handleDeleteComment();
-        break;
-      case 'pin':
-        handelChangePinStatus();
         break;
       case 'edit':
         toggleUpdateBox();
@@ -206,26 +143,11 @@ function VideoCommentCard({
         <div className="flex  gap-2">
           <img
             src={owner.profilePhotoUrl}
-            className="rounded-full size-10 outline-primary outline-1 outline-offset-1"
+            className="rounded-full size-9 outline-primary outline-1 outline-offset-1"
           />
           <div>
-            {isPinned ? (
-              <div className="flex items-center gap-1 text-gray-700">
-                <span className=" text-sm">
-                  <MdOutlinePushPin />
-                </span>
-                <span className="text-sm font-secondary">Pinned by author</span>
-              </div>
-            ) : null}
             <div>
               <div className="flex items-center gap-2">
-                <Link to="">
-                  <span
-                    className={`font-medium text-sm p-1 ${isPinned ? 'bg-secondary text-white' : ''} rounded-full`}
-                  >
-                    {owner.uniqueName}{' '}
-                  </span>
-                </Link>
                 <span className="font-medium text-gray-600 font-secondary text-[0.9rem]">
                   {timeAgo(comment.createdAt)}
                 </span>
@@ -275,13 +197,6 @@ function VideoCommentCard({
             ref={dropDownRef}
             className={`${isDropdownOpen ? 'duration-300' : 'hidden'} absolute ${isOnBottom ? '-top-32' : 'top-8'} right-0 z-50 w-60  bg-black shadow-md text-white hover:*:cursor-pointer`}
           >
-            <li
-              onClick={() => handelTriggerDropdownButton('pin')}
-              className={`p-2 ${isDropdownOpen ? 'opacity-100 duration-300' : 'opacity-0'} hover:bg-primary`}
-            >
-              {isPinned ? 'Unpin this' : 'Pin this'}
-            </li>
-
             {comment.isOwner ? (
               <>
                 <li
@@ -321,37 +236,8 @@ function VideoCommentCard({
           comment={comment}
         />
       ) : null}
-
-      {allReplies?.length ? (
-        <div>
-          <button
-            onClick={() => setIsDisplayReplies(p => !p)}
-            className="mt-2 mx-auto lg:mx-0 text-primary font-medium flex items-center gap-2"
-          >
-            <span>
-              {isDisplayReplies ? 'Hide' : 'Show'} {allReplies.length} replies
-            </span>{' '}
-            <span className={`${isDisplayReplies ? 'rotate-180' : ''} duration-100 text-3xl`}>
-              <RiArrowDropDownFill />
-            </span>
-          </button>
-          {isDisplayReplies ? (
-            <div className="px-5">
-              {allReplies.map(replay => (
-                <VideoCommentReplayCard
-                  onDeleteSuccess={handelReplayDelete}
-                  onPostReplaySuccess={handelPostReplay}
-                  onUpdateSuccess={handelUpdateComment}
-                  key={replay.id}
-                  comment={replay}
-                />
-              ))}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
     </div>
   );
 }
 
-export default VideoCommentCard;
+export default VideoCommentReplayCard;

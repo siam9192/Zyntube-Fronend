@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import VideoPlayer from '../component/sections/watch/VideoPlayer';
 import VideoDetails from '../component/sections/watch/VideoDetails';
-import VideoComments from '../component/sections/home/VideoComments';
+import VideoComments from '../component/sections/watch/VideoComments';
 import { useLocation, useParams } from 'react-router-dom';
 import RelatedVideos from '../component/sections/watch/RelatedVideos';
 import { IWatchVideo } from '../types/video.type';
@@ -62,7 +62,7 @@ const WatchPage = () => {
     if (!isLoading && video) {
       const state = video.state;
       setVideoState({
-        isSubscriber: video.isSubscriber,
+        isSubscriber: video.channel.isSubscribed,
         reactionType: video.reactionType,
         isSaved: false,
         isWatchLater: false,
@@ -105,7 +105,7 @@ const WatchPage = () => {
         <div className="col-span-4">
           <VideoPlayer />
           <VideoDetails />
-          {!isSmallScreenSize ? <VideoComments /> : null}
+          {!isSmallScreenSize ? <VideoComments videoId={id as string} /> : null}
         </div>
 
         {!isSmallScreenSize ? <RelatedVideos id={id as string} /> : null}

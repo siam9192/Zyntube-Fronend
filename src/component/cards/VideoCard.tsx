@@ -1,10 +1,10 @@
 import { BsDot } from 'react-icons/bs';
 import VideoCardShortOptions from '../ui/VideoCardShortOptions';
 import { Link } from 'react-router-dom';
-import { IVideo } from '../../types/video.type';
-import { secondsToDurationShort, timeAgo } from '../../helpers';
+import { IPublicVideo, IVideo } from '../../types/video.type';
+import { formatNumber, secondsToDurationShort, timeAgo } from '../../helpers';
 interface IProps {
-  video: IVideo;
+  video: IPublicVideo;
 }
 const VideoCard = ({ video }: IProps) => {
   const { media, channel } = video;
@@ -16,12 +16,12 @@ const VideoCard = ({ video }: IProps) => {
           <img
             src={media.thumbnailUrl}
             alt=""
-            className="h-52 w-full rounded-lg group-hover:hidden block"
+            className="h-52  w-full rounded-lg group-hover:hidden block"
           />
           <img
             src={`https://image.mux.com/${media.muxPlaybackId}/animated.gif?width=320&end=10&fps=15&height=320`}
             alt=""
-            className="h-52 w-full rounded-lg hidden group-hover:block group-hover:rounded-none duration-100"
+            className="h-52  w-full rounded-lg hidden group-hover:block group-hover:rounded-none duration-100"
           />
 
           <p className="p-1 rounded-sm text-sm scale-80 bg-primary text-white absolute bottom-2 right-1">
@@ -39,7 +39,7 @@ const VideoCard = ({ video }: IProps) => {
                 <p className="text-gray-800">{channel.name}</p>
               </Link>
               <p className="text-gray-800 text-sm">
-                <span>4.3M views</span>{' '}
+                <span>{formatNumber(video.state.viewsCount)} views</span>{' '}
                 <span>
                   <BsDot className="inline" />
                 </span>{' '}
@@ -49,7 +49,9 @@ const VideoCard = ({ video }: IProps) => {
           </div>
         </div>
       </Link>
-      <VideoCardShortOptions btnClassName = {"absolute right-0 bottom-2 text-xl p-2 hover:bg-secondary hover:rounded-full hover:text-white"} />
+      <div className="absolute right-0 bottom-2 ">
+        <VideoCardShortOptions />
+      </div>
     </div>
   );
 };

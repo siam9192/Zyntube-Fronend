@@ -1,6 +1,6 @@
 import { formatParamsToString } from '../../../helpers';
 import { IParam, IResponse } from '../../../types/util.type';
-import { IVideo, IWatchVideo } from '../../../types/video.type';
+import { IPublicVideo, IVideo, IWatchVideo } from '../../../types/video.type';
 import { baseApi } from '../../api/baseApi';
 const videoApi = baseApi.injectEndpoints({
   endpoints: builder => ({
@@ -28,7 +28,7 @@ const videoApi = baseApi.injectEndpoints({
         url: `/videos/home-feed${formatParamsToString(params)}`,
         method: 'GET',
       }),
-      transformResponse: (response: IResponse<IVideo[]>) => {
+      transformResponse: (response: IResponse<IPublicVideo[]>) => {
         return response;
       },
     }),
@@ -46,7 +46,16 @@ const videoApi = baseApi.injectEndpoints({
         url: `/videos/related/${id}`,
         method: 'GET',
       }),
-      transformResponse: (response: IResponse<IWatchVideo[]>) => {
+      transformResponse: (response: IResponse<IPublicVideo[]>) => {
+        return response;
+      },
+    }),
+    getSearchVideos: builder.query({
+      query: (params: IParam[]) => ({
+        url: `/videos/search${formatParamsToString(params)}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: IResponse<IPublicVideo[]>) => {
         return response;
       },
     }),
@@ -59,4 +68,5 @@ export const {
   useGetHomeFeedVideosQuery,
   useGetWatchVideoQuery,
   useGetRelatedVideosQuery,
+  useGetSearchVideosQuery,
 } = videoApi;

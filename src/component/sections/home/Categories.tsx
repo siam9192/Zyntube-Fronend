@@ -59,7 +59,7 @@ function Categories() {
       <SlArrowRight />
       </button>
     </div> */}
-      <div className="md:flex items-center flex-wrap gap-4 categories_tab_container md:block hidden">
+      <div className="flex items-center  gap-4 categories_tab_container overflow-x-auto hide-scrollbar ">
         {categories.slice(0, 12).map((category, index) => (
           <button
             onClick={() => setActiveIndex(index)}

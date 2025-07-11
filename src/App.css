@@ -1,5 +1,6 @@
 .tab__btn {
   position: relative;
+  text-wrap-mode:nowrap;
 }
 
 .tab__btn:active {
@@ -15,7 +16,7 @@
   z-index: 1;
 }
 
-.categories_tab_container .active::after {
+.tab__btn.active::after {
   content: '';
   position: absolute;
   top: 0;
@@ -41,7 +42,7 @@
   }
 }
 
-.categories_container_before::before {
+.categories_container::before {
   content: '';
   position: absolute;
   left: 0;
@@ -53,7 +54,7 @@
   z-index: 5;
 }
 
-.categories_container_after::after {
+.categories_container::after {
   content: '';
   position: absolute;
   right: 0;

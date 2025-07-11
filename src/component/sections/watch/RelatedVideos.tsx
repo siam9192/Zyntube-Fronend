@@ -13,12 +13,11 @@ interface IProps {
 
 function RelatedVideos({ id }: IProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const {screenSizeType} =  usEScreenSize()
-  const isSmallScreenSize = [EScreenSizeType.SM, EScreenSizeType.MD].includes(screenSizeType); 
+  const { screenSizeType } = usEScreenSize();
+  const isSmallScreenSize = [EScreenSizeType.SM, EScreenSizeType.MD].includes(screenSizeType);
   const { data, isLoading } = useGetRelatedVideosQuery(id);
 
   const videos = data?.data || [];
-  
 
   return (
     <div className="col-span-2">
@@ -32,14 +31,15 @@ function RelatedVideos({ id }: IProps) {
           </button>
         ))}
       </div>
-      <div className={` ${isSmallScreenSize ? 'grid md:grid-cols-2 grid-cols-1' :'flex flex-col'   }  gap-5`}>
+      <div
+        className={` ${isSmallScreenSize ? 'grid md:grid-cols-2 grid-cols-1' : 'flex flex-col'}  gap-5`}
+      >
         {videos.map((_, index) => {
-         if(isSmallScreenSize) {
-          return <VideoCard video={_} key={index}/>
-         }
-         else {
-          return <RelatedVideoCard  video={_} key={index}/>
-         }
+          if (isSmallScreenSize) {
+            return <VideoCard video={_} key={index} />;
+          } else {
+            return <RelatedVideoCard video={_} key={index} />;
+          }
         })}
       </div>
     </div>

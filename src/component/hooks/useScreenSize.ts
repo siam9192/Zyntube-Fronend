@@ -22,14 +22,13 @@ function useScreenSize() {
   const [sizeType, setSizeType] = useState<EScreenSizeType>(EScreenSizeType.XXL);
   const [size, setSize] = useState({ width: 0, height: 0 });
 
- const getSizeType = (width: number): EScreenSizeType => {
-  if (width >= breakpoints['2xl']) return EScreenSizeType.XXL;
-  if (width >= breakpoints.xl) return EScreenSizeType.XL;
-  if (width >= breakpoints.lg) return EScreenSizeType.LG;
-  if (width >= breakpoints.md) return EScreenSizeType.MD;
-  return EScreenSizeType.SM;
-};
-
+  const getSizeType = (width: number): EScreenSizeType => {
+    if (width >= breakpoints['2xl']) return EScreenSizeType.XXL;
+    if (width >= breakpoints.xl) return EScreenSizeType.XL;
+    if (width >= breakpoints.lg) return EScreenSizeType.LG;
+    if (width >= breakpoints.md) return EScreenSizeType.MD;
+    return EScreenSizeType.SM;
+  };
 
   useEffect(() => {
     const handleResize = () => {

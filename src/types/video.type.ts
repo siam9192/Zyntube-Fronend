@@ -63,8 +63,35 @@ export enum EVideoStatus {
   BLOCKED = 'BLOCKED',
 }
 
-export interface IWatchVideo extends IVideo {
+export interface IWatchVideo
+  extends Pick<
+    IVideo,
+    | 'id'
+    | 'title'
+    | 'description'
+    | 'duration'
+    | 'aspectRatio'
+    | 'resolutionTier'
+    | 'media'
+    | 'state'
+    | 'setting'
+    | 'createdAt'
+  > {
+  channel: Pick<IChannel, 'id' | 'name' | 'uniqueName' | 'profilePhotoUrl' | 'subscribersCount'> & {
+    isSubscribed: boolean;
+  };
+  reactionType: EVideoReactionType;
+  isSaved: boolean;
+  isOwn: boolean;
+}
+
+export interface IPublicVideo
+  extends Pick<IVideo, 'id' | 'title' | 'duration' | 'media' | 'state' | 'createdAt'> {
+  channel: Pick<IChannel, 'id' | 'name' | 'uniqueName' | 'profilePhotoUrl' | 'subscribersCount'> & {
+    isSubscribed: boolean;
+  };
   reactionType: EVideoReactionType;
   isSubscriber: boolean;
   isSaved: boolean;
+  isOwn: boolean;
 }

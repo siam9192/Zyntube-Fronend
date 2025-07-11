@@ -1,4 +1,3 @@
-import { SlMenu } from 'react-icons/sl';
 import SearchBox from '../ui/SearchBox';
 import HeaderUtils from '../ui/HeaderUtils';
 

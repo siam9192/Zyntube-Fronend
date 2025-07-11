@@ -17,5 +17,5 @@ export const baseApi = createApi({
   }),
 
   endpoints: builder => ({}),
-  tagTypes: ['my-profile', 'current-user', 'my-videos'],
+  tagTypes: ['my-profile', 'current-user', 'my-videos', 'video-comments'],
 });

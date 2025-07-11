@@ -2,7 +2,7 @@ import { createContext, Dispatch, SetStateAction, useState } from 'react';
 import Categories from '../component/sections/home/Categories';
 import HomeVideos from '../component/sections/home/HomeVideos';
 import { useGetHomeFeedVideosQuery } from '../redux/features/video/video.api';
-import { IVideo } from '../types/video.type';
+import { IPublicVideo, IVideo } from '../types/video.type';
 import { TMeta } from '../types/util.type';
 
 // Types
@@ -15,7 +15,7 @@ export type THomeContextValue = {
   refetch: () => void;
   setCategory: Dispatch<SetStateAction<string>>;
   setPage: Dispatch<SetStateAction<number>>;
-  videos: IVideo[];
+  videos: IPublicVideo[];
   meta: TMeta | undefined;
 };
 

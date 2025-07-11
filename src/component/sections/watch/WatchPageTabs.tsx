@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import RelatedVideos from './RelatedVideos';
 import { useParams } from 'react-router-dom';
-import VideoComments from '../home/VideoComments';
+import VideoComments from './VideoComments';
 
 const tabs = ['Related videos', 'Comments'];
 
@@ -23,7 +23,11 @@ function WatchPageTabs() {
         ))}
       </div>
       <div className="mt-5">
-        {openTab === tabs[0] ? <RelatedVideos id={id as string} /> : <VideoComments />}
+        {openTab === tabs[0] ? (
+          <RelatedVideos id={id as string} />
+        ) : (
+          <VideoComments videoId={id as string} />
+        )}
       </div>
     </div>
   );

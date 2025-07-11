@@ -1,24 +1,68 @@
-import Avatar from './Avatar';
+import { useRef, useState } from 'react';
+import { useCreateVideoCommentMutation } from '../../redux/features/video-comment/video-comment.api';
+import { toast } from 'sonner';
+import { IVideoComment } from '../../types/video-comment.type';
+import { DEFAULT_ERROR_MESSAGE } from '../../utils/constant';
+import useCurrentUser from '../../hooks/useCurrentUser';
+interface IProps {
+  parentId?: string;
+  videoId: string;
+  onPostSuccess?: (comment: IVideoComment) => void;
+}
+function CommentPostBox({ videoId, parentId, onPostSuccess }: IProps) {
+  const [content, setContent] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [createVideo, { isLoading }] = useCreateVideoCommentMutation();
+  const handelPostVideo = async () => {
+    try {
+      const res = await createVideo({
+        content,
+        videoId,
+      });
+      const error: any = res.error;
+      if (error) {
+        throw new Error(error.data.message);
+      }
+      clear();
+      onPostSuccess && onPostSuccess(res.data?.data!);
+    } catch (error: any) {
+      toast.error(error.message || DEFAULT_ERROR_MESSAGE);
+    }
+  };
 
-function CommentPostBox() {
+  function clear() {
+    setContent('');
+    const current = textareaRef.current;
+    if (current) current.value = '';
+  }
+
+  const { isUserExist } = useCurrentUser();
+
   return (
     <div className="mt-4">
-      <div className="flex gap-2">
-        <Avatar
-          url="https://yt3.googleusercontent.com/aduvRrAka4iwQ3XD7XR3agLNl5Uwqs4sNCf50CCPJkbOTjiE18ZgFKPeom5ZDBincl57v29tMz4=s160-c-k-c0x00ffffff-no-rj"
-          className="size-14 rounded-full"
-        />
+      {!isUserExist ? (
+        <p className="text-sm md:text-lg text-red-500">Please login first to drop comment here..</p>
+      ) : null}
+      <div className="mt-3 flex gap-2 ">
         <textarea
+          ref={textareaRef}
           name=""
           id=""
+          onChange={e => setContent(e.target.value)}
           placeholder="Write here..."
           className="md:min-h-32 min-h-20 max-h-80 border-2 border-gray-700/20 w-full  p-2 rounded-md focus:outline-secondary  placeholder:font-medium  font-primary"
         ></textarea>
       </div>
       <div className="mt-2 flex justify-end gap-2">
-        <button className="px-6 py-2 bg-gray-100  rounded-md text-black">Clear</button>
-        <button className="px-6 py-2 bg-primary hover:bg-pink-700  rounded-md text-white">
-          Post Comment
+        <button onClick={clear} className="px-6 py-2 bg-gray-100  rounded-md text-black">
+          Clear
+        </button>
+        <button
+          disabled={isLoading}
+          onClick={handelPostVideo}
+          className="px-6 py-2 bg-primary hover:bg-pink-700  rounded-md text-white"
+        >
+          {isLoading ? 'Posting...' : 'Post Comment'}
         </button>
       </div>
     </div>

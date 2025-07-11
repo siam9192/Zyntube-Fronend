@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { IParam } from '../types/util.type';
+import { EVideoReactionType } from '../types/video-reaction.type';
 export function setAccessToken(accessToken: string) {
   Cookies.set('accessToken', accessToken as string, {
     expires: 60 * 24 * 60 * 60 * 1000,
@@ -110,4 +111,35 @@ export function formatNumber(number: number) {
   if (number < 1_000_000) return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
   if (number < 1_000_000_000) return (number / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
   return (number / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+}
+
+export function formatToPublicComment(
+  comment: any,
+  other: {
+    reactionType: EVideoReactionType | null;
+    isOwner: boolean;
+  },
+) {
+  const channel = comment.user.channel;
+  const owner = {
+    name: channel.name,
+    uniqueName: channel.uniqueName,
+    profilePhotoUrl: channel.profilePhotoUrl,
+    subscribersCount: channel.subscribersCount,
+  };
+
+  return {
+    id: comment.id,
+    content: comment.content,
+    likesCount: comment.likesCount,
+    dislikesCount: comment.dislikes,
+    isPinned: comment.isPinned,
+    isHidden: comment.isHidden,
+    replies: comment.replies || [],
+    repliesCount: comment.repliesCount || 0,
+    reactionType: other.reactionType,
+    isOwner: other.isOwner,
+    owner,
+    createdAt: comment.createdAt,
+  };
 }

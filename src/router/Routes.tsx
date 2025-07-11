@@ -15,6 +15,7 @@ import Provider from '../provider/Provider';
 import Auth from '../middleware/Auth';
 import { EUserRole } from '../types/user.type';
 import EditVideoPage from '../pages/studio/EditVideoPage';
+import ResultPage from '../pages/ResultPage';
 
 const routes = [
   {
@@ -40,6 +41,10 @@ const routes = [
           {
             path: 'channel/:username',
             element: <ChannelPage />,
+          },
+          {
+            path: 'results',
+            element: <ResultPage />,
           },
         ],
       },

@@ -3,7 +3,6 @@ import { BsCollectionPlay, BsQuestionCircle } from 'react-icons/bs';
 import { FaRegFlag } from 'react-icons/fa';
 import { GoHome } from 'react-icons/go';
 import {
- 
   IoCalendarClearOutline,
   IoFlagOutline,
   IoSettingsOutline,
@@ -13,9 +12,9 @@ import { LuFolder } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 import SignInButton from '../ui/SignInButton';
 interface IProps {
-  expand:boolean
+  expand: boolean;
 }
-const Sidebar = ({expand}:IProps) => {
+const Sidebar = ({ expand }: IProps) => {
   const baseicRoutes = [
     {
       title: 'Home',
