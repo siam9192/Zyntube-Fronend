@@ -1,16 +1,16 @@
 import './App.css';
 import ProfileSetup from './component/ui/ProfileSetup';
 import { Outlet } from 'react-router-dom';
-import useCurrentUser from './hooks/useCurrentUser';
-import { useAppSelector } from './redux/hook';
+import AuthFormModal from './component/ui/AuthFormModal';
 
 function App() {
-  const { user, isUserExist } = useCurrentUser();
-  const toogleState = useAppSelector(st => st.toggle);
-
   return (
     <>
-      {isUserExist && !user?.app.setupStatus ? <ProfileSetup /> : null}
+      {/* Global modals */}
+      <ProfileSetup />
+      <AuthFormModal />
+
+      {/* Layout pages */}
       <Outlet />
     </>
   );

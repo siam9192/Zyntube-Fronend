@@ -4,6 +4,8 @@ import ConfirmModal from '../modal/ConfirmModal';
 import { subscribeChannel, unsubscribeChannel } from '../../services/channel-subscribe.service';
 import { DEFAULT_ERROR_MESSAGE } from '../../utils/constant';
 import useCurrentUser from '../../hooks/useCurrentUser';
+import { useAppDispatch } from '../../redux/hook';
+import { toggle } from '../../redux/slices/toggle.slice';
 interface IProps {
   subscribed: boolean;
   channelId: string;
@@ -15,7 +17,13 @@ function ToggleSubscribe({ subscribed, channelId, channelName, onToggle }: IProp
   const [isSubscribed, setIsSubscribed] = useState(subscribed);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function toggle() {
+  const dispatch = useAppDispatch();
+
+  async function toggleSubscribe() {
+    //Open login modal on user not existence
+    if (!user) return dispatch(toggle({ isOpenLoginModal: true }));
+    
+
     let st = isSubscribed;
     setIsLoading(true);
     try {
@@ -40,19 +48,19 @@ function ToggleSubscribe({ subscribed, channelId, channelName, onToggle }: IProp
   }
 
   const isDisabled = user?.app.channel.id == channelId || isLoading;
-  console.log(isDisabled);
+
   return (
     <>
       {!isSubscribed ? (
         <button
-          onClick={toggle}
+          onClick={toggleSubscribe}
           disabled={isDisabled}
           className="px-6 py-2 text-sm disabled:bg-gray-200 disabled:text-gray-700 bg-primary  rounded-full text-white font-medium"
         >
           Subscribe
         </button>
       ) : (
-        <ConfirmModal onconfirm={toggle}>
+        <ConfirmModal onconfirm={toggleSubscribe}>
           <button className="px-6 py-2 text-sm bg-secondary  rounded-full text-white font-medium">
             Subscribed
           </button>

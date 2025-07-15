@@ -3,7 +3,6 @@ import { FaEdit } from 'react-icons/fa';
 import ImageCropper from './ImageCropper';
 import useBounce from '../hooks/useBounce';
 import { checkChannelExistence } from '../../services/channel.service';
-
 import { ISetupProfilePayload } from '../../types/user.type';
 import { uploadImageToCloudinary } from '../../helpers';
 import { setupProfile } from '../../services/user.service';
@@ -11,6 +10,11 @@ import { DEFAULT_ERROR_MESSAGE } from '../../utils/constant';
 import useCurrentUser from '../../hooks/useCurrentUser';
 
 function ProfileSetup() {
+  const { user } = useCurrentUser();
+
+  // Show this modal when user profile is not completely set upped
+  if (!user || user.app.setupStatus === true) return null;
+
   const [step, setStep] = useState(0);
   const [avatarImage, setAvatarImage] = useState<File | null>(null);
   const [croppedAvatarImage, setCroppedAvatarImage] = useState<File | null>(null);
@@ -22,10 +26,9 @@ function ProfileSetup() {
   const [isChecking, setIsChecking] = useState(false);
   const [isSetupLoading, setIsSetupLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
   const { refetch } = useCurrentUser();
-
   const bouncedUniqueName = useBounce(channelUniqueName);
+
   useEffect(() => {
     async function handle() {
       setIsChecking(true);

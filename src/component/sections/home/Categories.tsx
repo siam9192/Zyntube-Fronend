@@ -31,16 +31,17 @@ function Categories() {
   if (!context) {
     throw new Error('useContext must be used within a HomeContext.Provider');
   }
-  const { setCategory, refetch, isLoading } = context;
+  const { setCategory, setVideos, refetch, isLoading } = context;
 
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     setCategory(categories[activeIndex].toLowerCase());
     if (isLoading) return;
-    setTimeout(() => {
-      refetch();
-    }, 300);
+    setVideos([]);
+    // setTimeout(() => {
+    //   refetch();
+    // }, 300);
   }, [activeIndex]);
 
   return (

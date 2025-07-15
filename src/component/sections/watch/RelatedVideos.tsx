@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import VideoCardShortOptions from '../../ui/VideoCardShortOptions';
-import { BsDot } from 'react-icons/bs';
 import RelatedVideoCard from '../../cards/RelatedVideoCard';
 import { useGetRelatedVideosQuery } from '../../../redux/features/video/video.api';
 import usEScreenSize, { EScreenSizeType } from '../../hooks/useScreenSize';

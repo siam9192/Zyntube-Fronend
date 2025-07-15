@@ -40,6 +40,7 @@ const videoApi = baseApi.injectEndpoints({
       transformResponse: (response: IResponse<IWatchVideo>) => {
         return response;
       },
+      keepUnusedDataFor: 60,
     }),
     getRelatedVideos: builder.query({
       query: (id: string) => ({

@@ -13,7 +13,10 @@ const CommonLayout = () => {
         <div className=" lg:w-fit xl:w-[15%] lg:block hidden h-full bg-white">
           <Sidebar expand={toggleState.isPrimarySidebarExpanded} />
         </div>
-        <div className=" w-full xl:w-[85%]  overflow-hidden hide-scrollbar overflow-y-auto bg-[rgb(247,247,247) p-2">
+        <div
+          id="layout-content-container"
+          className=" w-full xl:w-[85%]  overflow-hidden hide-scrollbar overflow-y-auto bg-[rgb(247,247,247) p-2"
+        >
           <Outlet />
         </div>
       </div>

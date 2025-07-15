@@ -4,6 +4,7 @@ interface InitialState {
   isPrimarySidebarExpanded: boolean;
   isStudioSidebarExpanded: boolean;
   isOpenLoginModal: boolean;
+  isOpenLoginFirstModal: boolean;
   isOpenUploadModal: boolean;
 }
 
@@ -11,6 +12,7 @@ const initialState: InitialState = {
   isPrimarySidebarExpanded: false,
   isStudioSidebarExpanded: true,
   isOpenLoginModal: false,
+  isOpenLoginFirstModal: true,
   isOpenUploadModal: false,
 };
 

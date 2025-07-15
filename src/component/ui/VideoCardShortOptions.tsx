@@ -61,7 +61,7 @@ const VideoCardShortOptions = ({ btnClassName }: IProps) => {
         <HiDotsVertical />
       </button>
       <div
-        className={`${isOpen ? 'visible translate-y-0 ' : 'invisible -translate-y-1 '} duration-100 absolute -right-10 ${top || 'top-12'}  w-52 min-h-40 p-3 bg-white shadow-lg rounded-lg text-sm `}
+        className={`${isOpen ? 'visible translate-y-0 ' : 'invisible -translate-y-1 '} duration-100 absolute -right-10 ${top || 'top-12'}  w-52 min-h-40 p-3 bg-white shadow-lg rounded-lg text-sm  z-40`}
       >
         <ul className="text-black font-medium space-y-1">
           {Object.values(menuItems).map((group, index) => (

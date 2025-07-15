@@ -11,10 +11,11 @@ import { toast } from 'sonner';
 import { DEFAULT_ERROR_MESSAGE } from '../../../utils/constant';
 
 const VideoDetails = () => {
+  const { isUserExist } = useCurrentUser();
   const { video, setVideoState, videoState } = useWatchContext();
   const { channel, state } = video;
   const [isViewFull, setIsViewFull] = useState(false);
-  const { isUserExist } = useCurrentUser();
+
   const reactionType = videoState.reactionType;
 
   let description = video.description;
@@ -70,7 +71,6 @@ const VideoDetails = () => {
   }
 
   async function handelToggleSubscribe(st: boolean) {
-    console.log(st);
     let subscribersCount = videoState.subscribersCount;
     if (st) {
       subscribersCount += 1;
