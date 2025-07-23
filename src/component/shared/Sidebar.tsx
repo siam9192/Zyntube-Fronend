@@ -11,6 +11,11 @@ import {
 import { LuFolder } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 import SignInButton from '../ui/SignInButton';
+import { useGetMySubscribesQuery } from '../../redux/features/channel-subscibe/channel-subscibe.api';
+import SubscribeChannelSidebarCard from '../cards/SubscribeChannelSidebarcard';
+import SubscribeChannelLoadingSidebarCard from '../cards/SubscribeChannelLoadingSidebarCard';
+import useLoadingBounce from '../../hooks/useLoadingBounce';
+import useCurrentUser from '../../hooks/useCurrentUser';
 interface IProps {
   expand: boolean;
 }
@@ -74,6 +79,28 @@ const Sidebar = ({ expand }: IProps) => {
       href: '',
     },
   ];
+
+  const {data,isLoading:isMySubscribesLoading} = useGetMySubscribesQuery([
+    {
+      name:'limit',
+      value:6
+    },
+    {
+      name:'sortBy',
+      value:'createdAt'
+    },
+     {
+      name:'sortOrder',
+      value:'desc'
+    }
+  ])
+  
+  const {isUserExist} = useCurrentUser()
+
+  const subscribes =  data?.data
+  const mySubscribesBouncedLoading = useLoadingBounce(isMySubscribesLoading,1000)
+
+
   return (
     <div className="h-full overflow-y-auto  w-full hide-scrollbar ">
       <div className="space-y-2 w-full p-3">
@@ -88,32 +115,39 @@ const Sidebar = ({ expand }: IProps) => {
           </Link>
         ))}
       </div>
-      <div className="p-5  border-t border-b border-gray-400/20 lg:hidden xl:block">
+  {
+    !isUserExist ?
+        <div className="p-5  border-t border-b border-gray-400/20 lg:hidden xl:block">
         <p className="font-secondary text-gray-800">
           Signin to like videos,comments and subscribe.
         </p>
         <SignInButton />
       </div>
-      <div className="p-3  border-t border-b border-gray-400/20 lg:hidden xl:block">
+      :
+      null
+  }
+   {
+    isUserExist ?
+       <div className="p-3 min-h-32 border-t border-b border-gray-400/20 lg:hidden xl:block">
         <h3 className="text-lg font-medium">Subscribed Channels</h3>
         <div className="mt-3 space-y-4">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Link to="">
-              <div
-                className="flex items-center gap-2 hover:bg-gray-100 hover:rounded-md p-2 "
-                key={index}
-              >
-                <img
-                  src="https://yt3.googleusercontent.com/aduvRrAka4iwQ3XD7XR3agLNl5Uwqs4sNCf50CCPJkbOTjiE18ZgFKPeom5ZDBincl57v29tMz4=s160-c-k-c0x00ffffff-no-rj"
-                  alt=""
-                  className="size-10 rounded-full outline-2 outline-offset-1 outline-primary"
-                />
-                <p className="font-medium">Excited Boy Gaming</p>
-              </div>
-            </Link>
-          ))}
+        {
+         mySubscribesBouncedLoading?
+          Array.from({length:6}).map((_,index)=><SubscribeChannelLoadingSidebarCard key={index}/>)
+         :
+         subscribes?.length ?
+          subscribes?.map(subscribe=>(
+            <SubscribeChannelSidebarCard subscribe={subscribe} key={subscribe.id}/>
+          ))
+          :
+          <p className='text-sm text-center mt-5'>You have no subscribes</p>
+        
+        }
         </div>
       </div>
+      :
+      null
+   }
       <div className="p-3">
         <h3 className="text-lg font-medium lg:hidden xl:block">Support By ZynTube</h3>
         <div className="space-y-2 mt-3">

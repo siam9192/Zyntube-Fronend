@@ -10,7 +10,7 @@ interface IProps {
   subscribed: boolean;
   channelId: string;
   channelName?: string;
-  onToggle: (st: boolean) => void;
+  onToggle?: (st: boolean) => void;
 }
 function ToggleSubscribe({ subscribed, channelId, channelName, onToggle }: IProps) {
   const { user } = useCurrentUser();
@@ -22,7 +22,6 @@ function ToggleSubscribe({ subscribed, channelId, channelName, onToggle }: IProp
   async function toggleSubscribe() {
     //Open login modal on user not existence
     if (!user) return dispatch(toggle({ isOpenLoginModal: true }));
-    
 
     let st = isSubscribed;
     setIsLoading(true);
@@ -34,10 +33,11 @@ function ToggleSubscribe({ subscribed, channelId, channelName, onToggle }: IProp
         await unsubscribeChannel(channelId);
         toast(`You unsubscribed ${channelName || 'This channel'} `);
       }
-      setIsSubscribed(p => {
-        st = !p;
-        return st;
-      });
+      st = !st
+      setIsSubscribed(
+        st
+      );
+    
       onToggle && onToggle(st);
       setIsSubscribed(st);
     } catch (error) {

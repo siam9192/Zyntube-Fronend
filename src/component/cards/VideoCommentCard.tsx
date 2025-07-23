@@ -17,6 +17,9 @@ import CommentUpdateBox from '../ui/CommentUpdateBox';
 import { RiArrowDropDownFill } from 'react-icons/ri';
 import { useGetVideoCommentAllRepliesQuery } from '../../redux/features/video-comment/video-comment.api';
 import VideoCommentReplayCard from './VideoCommentReplayCard';
+import { EVideoReactionType } from '../../types/video-reaction.type';
+import useCurrentUser from '../../hooks/useCurrentUser';
+import { switchVideoCommentReaction } from '../../services/video-comment-reaction.service';
 
 interface IProps {
   comment: IVideoCommentPublic;
@@ -31,13 +34,15 @@ function VideoCommentCard({
   onDeleteSuccess,
   onChangePinStatusSuccess,
   onUpdateSuccess,
-  onPostReplaySuccess,
 }: IProps) {
+  const { isUserExist } = useCurrentUser();
+
   const [isReadMore, setIsReadMore] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isReplayBoxOpen, setIsReplayBoxOpen] = useState(false);
   const [isUpdateBoxOpen, setIsUpdateBoxOpen] = useState(false);
   const [isOnBottom, setIsOnBottom] = useState(false);
+
   const dropDownRef = useRef<HTMLUListElement>(null);
   const defaultDisplayLength = 200;
   const cardRef = useRef<HTMLDivElement>(null);
@@ -45,8 +50,15 @@ function VideoCommentCard({
   const [isDisplayReplies, setIsDisplayReplies] = useState(false);
   const { data } = useGetVideoCommentAllRepliesQuery(comment.id);
   const [allReplies, setAllReplies] = useState<IVideoCommentPublic[]>([]);
+
+  const [reactionType, setReactionType] = useState(comment.reactionType);
+
+  const [likesCount, setLikesCount] = useState(comment.likesCount);
+  const [dislikesCount, setDislikesCount] = useState(comment.dislikesCount);
+
   const replies = data?.data;
   const isPinned = comment.isPinned;
+
   useEffect(() => {
     const handler = () => {
       const currentDropdown = cardRef.current;
@@ -159,10 +171,8 @@ function VideoCommentCard({
 
   async function handelPostReplay(replay: IVideoComment) {
     setIsReplayBoxOpen(false);
-    setAllReplies(prev => [
-      ...prev,
-      formatToPublicComment(replay, { isOwner: true, reactionType: null }),
-    ]);
+    const format = formatToPublicComment(replay, { isOwner: true, reactionType: null });
+    setAllReplies(pre => [...pre, format]);
     // onPostReplaySuccess && onPostReplaySuccess(replay);
     setTimeout(() => {
       setIsDisplayReplies(true);
@@ -198,6 +208,49 @@ function VideoCommentCard({
         break;
     }
     setIsDropdownOpen(false);
+  }
+
+  async function handelSwitchReaction(type: EVideoReactionType) {
+    if (!isUserExist) {
+      return;
+    }
+
+    const prevType = reactionType; // previous reaction (LIKE, DISLIKE, or null)
+    const updateType = prevType === type ? null : type; // toggle logic
+
+    let likes = likesCount;
+    let dislikes = dislikesCount;
+
+    if (prevType === EVideoReactionType.LIKE) {
+      likes -= 1;
+    }
+    if (prevType === EVideoReactionType.DISLIKE) {
+      dislikes -= 1;
+    }
+
+    if (updateType === EVideoReactionType.LIKE) {
+      likes += 1;
+    }
+    if (updateType === EVideoReactionType.DISLIKE) {
+      dislikes += 1;
+    }
+
+    setReactionType(updateType);
+    setLikesCount(likes);
+    setDislikesCount(dislikes);
+
+    try {
+      const response = await switchVideoCommentReaction({
+        commentId: comment.id,
+        type: updateType,
+      });
+      if (!response.success) {
+        throw new Error();
+      }
+    } catch (error) {
+      toast.error(DEFAULT_ERROR_MESSAGE);
+      setReactionType(prevType);
+    }
   }
 
   return (
@@ -241,17 +294,35 @@ function VideoCommentCard({
                 </button>
               ) : null}
               <div className="mt-2 flex  items-center gap-3">
-                <button className="flex items-center gap-0.5">
-                  <span className="text-xl text-black ">
+                <button
+                  onClick={() => handelSwitchReaction(EVideoReactionType.LIKE)}
+                  className="flex items-center gap-0.5"
+                >
+                  <span
+                    className={`text-xl ${reactionType === EVideoReactionType.LIKE ? 'text-primary' : ' text-black'}`}
+                  >
                     <PiThumbsUp />
                   </span>
-                  <span className="text-sm text-gray-900">{comment.likesCount}</span>
+                  <span
+                    className={`text-sm ${reactionType === EVideoReactionType.LIKE ? 'text-primary' : 'text-gray-900 '}`}
+                  >
+                    {likesCount}
+                  </span>
                 </button>
-                <button className="flex items-center gap-0.5">
-                  <span className="text-xl text-black ">
+                <button
+                  onClick={() => handelSwitchReaction(EVideoReactionType.DISLIKE)}
+                  className="flex items-center gap-0.5"
+                >
+                  <span
+                    className={`text-xl ${reactionType === EVideoReactionType.DISLIKE ? 'text-primary' : ' text-black'}`}
+                  >
                     <PiThumbsDown />
                   </span>
-                  <span className="text-sm text-gray-900">{comment.dislikesCount}</span>
+                  <span
+                    className={`text-sm ${reactionType === EVideoReactionType.DISLIKE ? 'text-primary' : 'text-gray-900 '}`}
+                  >
+                    {dislikesCount}
+                  </span>
                 </button>
                 <button
                   onClick={() => setIsReplayBoxOpen(true)}
@@ -326,7 +397,7 @@ function VideoCommentCard({
         <div>
           <button
             onClick={() => setIsDisplayReplies(p => !p)}
-            className="mt-2 mx-auto lg:mx-0 text-primary font-medium flex items-center gap-2"
+            className="mt-2 mx-auto lg:mx-0 text-primary font-medium flex items-center gap-2 text-sm"
           >
             <span>
               {isDisplayReplies ? 'Hide' : 'Show'} {allReplies.length} replies
@@ -338,7 +409,7 @@ function VideoCommentCard({
           {isDisplayReplies ? (
             <div className="px-5">
               {allReplies.map(replay => (
-                <VideoCommentReplayCard
+                <VideoCommentCard
                   onDeleteSuccess={handelReplayDelete}
                   onPostReplaySuccess={handelPostReplay}
                   onUpdateSuccess={handelUpdateComment}

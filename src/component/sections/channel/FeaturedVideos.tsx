@@ -1,6 +1,5 @@
-import React from 'react';
 import ChannelVideoCard from '../../cards/ChannelVideoCard';
-
+import VideoLoadingCard from '../../cards/VideoLoadingCard';
 const FeaturedVideos = () => {
   return (
     <div className="mt-8">
@@ -8,7 +7,7 @@ const FeaturedVideos = () => {
       <div className="mt-5">
         <div className="grid grid-cols-4 gap-5">
           {Array.from({ length: 10 }).map((video, index) => (
-            <ChannelVideoCard key={index} />
+            <VideoLoadingCard key={index}/>
           ))}
         </div>
       </div>

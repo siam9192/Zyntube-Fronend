@@ -1,18 +1,20 @@
 import { useRef, useState } from 'react';
 import { useCreateVideoCommentMutation } from '../../redux/features/video-comment/video-comment.api';
 import { toast } from 'sonner';
-import { IVideoComment } from '../../types/video-comment.type';
 import { DEFAULT_ERROR_MESSAGE } from '../../utils/constant';
 import useCurrentUser from '../../hooks/useCurrentUser';
+import { useVideoCommentContext } from '../sections/watch/VideoComments';
+import { formatToPublicComment } from '../../helpers';
+
 interface IProps {
-  parentId?: string;
   videoId: string;
-  onPostSuccess?: (comment: IVideoComment) => void;
 }
-function CommentPostBox({ videoId, parentId, onPostSuccess }: IProps) {
+
+function CommentPostBox({ videoId }: IProps) {
   const [content, setContent] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [createVideo, { isLoading }] = useCreateVideoCommentMutation();
+  const { setComments } = useVideoCommentContext();
   const handelPostVideo = async () => {
     try {
       const res = await createVideo({
@@ -23,8 +25,11 @@ function CommentPostBox({ videoId, parentId, onPostSuccess }: IProps) {
       if (error) {
         throw new Error(error.data.message);
       }
+      // Add posted comments on states
+      const comment = formatToPublicComment(res.data?.data, { reactionType: null, isOwner: true });
+      setComments(pre => [comment, ...pre]);
+      // Reset all state fields values;
       clear();
-      onPostSuccess && onPostSuccess(res.data?.data!);
     } catch (error: any) {
       toast.error(error.message || DEFAULT_ERROR_MESSAGE);
     }

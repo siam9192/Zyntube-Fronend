@@ -1,6 +1,4 @@
-import React from 'react';
 import PlayListCard from '../../cards/PlayListCard';
-
 const ChannelPlayList = () => {
   return (
     <div className="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2  gap-x-5 gap-y-10">

@@ -1,7 +1,4 @@
-import React from 'react';
-import FeaturedVideos from './FeaturedVideos';
-import ChannelVideoCard from '../../cards/ChannelVideoCard';
-
+import VideoLoadingCard from '../../cards/VideoLoadingCard';
 const ChannelHome = () => {
   return (
     <div>
@@ -10,7 +7,7 @@ const ChannelHome = () => {
         <div className="mt-5">
           <div className="grid lg:grid-cols-4 gap-5">
             {Array.from({ length: 7 }).map((video, index) => (
-              <ChannelVideoCard key={index} />
+              <VideoLoadingCard key={index} />
             ))}
           </div>
         </div>
@@ -18,9 +15,9 @@ const ChannelHome = () => {
       <div className="mt-8">
         <h1 className="text-2xl font-primary text-black font-semibold">Popular Videos</h1>
         <div className="mt-5">
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid lg:grid-cols-4 gap-5">
             {Array.from({ length: 10 }).map((video, index) => (
-              <ChannelVideoCard key={index} />
+              <VideoLoadingCard key={index} />
             ))}
           </div>
         </div>
@@ -31,7 +28,7 @@ const ChannelHome = () => {
         <div className="mt-5">
           <div className="grid lg:grid-cols-4 gap-5">
             {Array.from({ length: 4 }).map((video, index) => (
-              <ChannelVideoCard key={index} />
+              <VideoLoadingCard key={index} />
             ))}
           </div>
         </div>

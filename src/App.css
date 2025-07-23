@@ -114,6 +114,10 @@
 .channel__tab.active3::after {
   transform: translateX(170px);
 }
+
+.channel__tab.active4::after {
+  transform: translateX(250px);
+}
 .playlist__card {
   isolation: isolate;
 }

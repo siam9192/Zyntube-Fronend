@@ -54,7 +54,7 @@ function CommentReplayBox({ comment, onCancel, onPostSuccess }: IProps) {
       <div className="flex gap-2">
         <img src={channel?.profilePhotoUrl} alt="" className="size-8 rounded-full" />
         <div className=" grow">
-          <p className="text-sm mb-1 text-end font-medium">
+          <p className="text-sm mb-1  font-medium">
             {isSelfReplay ? 'Replaying to your self' : `Replaying to ${owner.uniqueName}`}
           </p>
           <textarea

@@ -60,6 +60,15 @@ const videoApi = baseApi.injectEndpoints({
         return response;
       },
     }),
+    getChannelPublicVideos:builder.query({
+      query: ({channelId,params}:{channelId:string,params:IParam[]}) => ({
+        url: `/videos/channel/${channelId}${formatParamsToString(params)}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: IResponse<IPublicVideo[]>) => {
+        return response;
+      },
+    }),
   }),
 });
 
@@ -70,4 +79,5 @@ export const {
   useGetWatchVideoQuery,
   useGetRelatedVideosQuery,
   useGetSearchVideosQuery,
+  useGetChannelPublicVideosQuery
 } = videoApi;

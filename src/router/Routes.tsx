@@ -16,6 +16,7 @@ import Auth from '../middleware/Auth';
 import { EUserRole } from '../types/user.type';
 import EditVideoPage from '../pages/studio/EditVideoPage';
 import ResultPage from '../pages/ResultPage';
+import MySubscriptionsPage from '../pages/MySubscriptionsPage';
 
 const routes = [
   {
@@ -45,6 +46,10 @@ const routes = [
           {
             path: 'results',
             element: <ResultPage />,
+          },
+           {
+            path: 'subscriptions',
+            element: <MySubscriptionsPage />,
           },
         ],
       },

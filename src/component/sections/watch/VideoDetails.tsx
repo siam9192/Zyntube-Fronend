@@ -9,6 +9,7 @@ import useCurrentUser from '../../../hooks/useCurrentUser';
 import { switchVideoReaction } from '../../../services/video-reaction.service';
 import { toast } from 'sonner';
 import { DEFAULT_ERROR_MESSAGE } from '../../../utils/constant';
+import { Link } from 'react-router-dom';
 
 const VideoDetails = () => {
   const { isUserExist } = useCurrentUser();
@@ -86,29 +87,32 @@ const VideoDetails = () => {
       <div className="mt-3">
         <div className="flex  md:flex-row flex-col justify-between md:items-center md:gap-0 gap-4">
           <div className="flex items-center gap-4 ">
-            <img
-              src={channel.profilePhotoUrl}
-              alt=""
-              className=" md:size-12 size-10 rounded-full object-cover outline-primary outline-2 outline-offset-1"
-            />
-            <div>
-              <p className="md:text-xl text-[.9rem] text-black font-medium">
-                {channel.name}
-                {/* <span>
+            <Link to={`/channel/${channel.uniqueName}`} className="flex items-center gap-4 ">
+              <img
+                src={channel.profilePhotoUrl}
+                alt=""
+                className=" md:size-12 size-10 rounded-full object-cover outline-primary outline-2 outline-offset-1"
+              />
+              <div>
+                <p className="md:text-xl text-[.9rem] text-black font-medium">
+                  {channel.name}
+                  {/* <span>
                   <BsPatchCheckFill className="inline" size={18} color="" />
                 </span> */}
-              </p>
+                </p>
 
-              <p className="text-sm text-gray-800">
-                {formatNumber(videoState.subscribersCount)} Subscribers
-              </p>
-            </div>
+                <p className="text-sm text-gray-800">
+                  {formatNumber(videoState.subscribersCount)} Subscribers
+                </p>
+              </div>
+            </Link>
             <ToggleSubscribe
               onToggle={handelToggleSubscribe}
               subscribed={videoState.isSubscriber}
               channelId={channel.id}
             />
           </div>
+
           <div className="flex items-center   justify-end    gap-4 flex-wrap ">
             <div className="flex items-center gap-2 rounded-full bg-gray-100 py-1 ">
               <button

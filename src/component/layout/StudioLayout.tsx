@@ -2,7 +2,7 @@ import StudioHeader from '../shared/StudioHeader';
 import { Outlet } from 'react-router-dom';
 import StudioSidebar from '../shared/StudioSidebar';
 import useCurrentUser from '../../hooks/useCurrentUser';
-import StudioSideBarSkeleton from '../skeleton/StudioSideBarSkeleton';
+import StudioSideBarSkeleton from '../ui/StudioSideBarSkeleton';
 import { useAppSelector } from '../../redux/hook';
 
 function StudioLayout() {

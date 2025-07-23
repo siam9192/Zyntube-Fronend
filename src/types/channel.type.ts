@@ -23,3 +23,25 @@ export enum EChannelStatus {
   DELETED = 'DELETED',
   SUSPENDED = 'SUSPENDED',
 }
+
+export interface IPublicChannel
+  extends Pick<
+    IChannel,
+    | 'id'
+    | 'name'
+    | 'uniqueName'
+    | 'profilePhotoUrl'
+    | 'profileCoverPhotoUrl'
+    | 'about'
+    | 'subscribersCount'
+    | 'status'
+    | 'updatedAt'
+    | 'createdAt'
+  > {
+  _count: {
+    subscribers: number;
+    videos: number;
+  };
+  isSubscribed: boolean;
+  isOwn: boolean;
+}

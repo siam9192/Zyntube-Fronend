@@ -1,5 +1,3 @@
-import React from 'react';
-
 function StudioSideBarSkeleton() {
   return (
     <div className="py-3 px-2 border-r h-full border-r-gray-700/10">

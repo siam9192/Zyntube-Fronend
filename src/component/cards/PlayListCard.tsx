@@ -1,4 +1,3 @@
-import React from 'react';
 import { RiPlayList2Fill } from 'react-icons/ri';
 function PlayListCard() {
   return (
@@ -16,10 +15,10 @@ function PlayListCard() {
           <p className="text-sm ">2 Video</p>
         </div>
       </div>
-      <p className="md:text-[1rem] text-sm mt-1 font-primary font-medium line-clamp-2">
+      <p className="md:text-[1rem] text-sm mt-1 line-clamp-2">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, aspernatur.
       </p>
-      <p className="text-sm mt-1 text-gray-800 font-primary">View full playlist</p>
+      <p className="text-sm mt-1 text-secondary font-primary">View full playlist</p>
     </div>
   );
 }
